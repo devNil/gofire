@@ -6,8 +6,6 @@ import(
 	"text/template"
 	"encoding/json"
 	"io/ioutil"
-	"crypto/sha1"
-	"fmt"
 )
 
 type User struct{
@@ -116,12 +114,9 @@ var pendingUser *User
 func loginHandler(w http.ResponseWriter, r *http.Request){
 	html, err := ioutil.ReadFile("template/login.html")
 	if err != nil{
-		w.Write([]byte("Fehler"))
+		w.Write([]byte(err.Error()))
 		return
 	}
-	h := sha1.New()
-	
-	fmt.Println(h.Sum([]byte("Hello")))
 	
 	w.Write(html)
 }
