@@ -38,7 +38,7 @@ func (s *Server)run(){
 		select {
 		case c := <-server.register:
 			server.registeredConnections[c] = true
-			c.send<-&Message{&User{"Tha server"}, "Welcome"}
+			c.send<-&Message{&User{"From server"}, "with love"}
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
