@@ -9,8 +9,13 @@
 	
 	var websocket;
 	
+	var command = {"Type":0,"Value":""}
+	
+	console.log(JSON.stringify(command))
+	
 	function connect(){
 		websocket = new WebSocket(conn)
+		
 		websocket.onclose = function(evt){
 			$("#messages").append($("<div>").text("Closed"))
 		}
@@ -25,12 +30,20 @@
 				name = obj.Usr.Name	
 			}
 			
+			if(obj.Msg === "with love"){
+				command.Value = username
+				websocket.send(JSON.stringify(command))
+			}
 			
 			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
 		}
+		
 	}
 	
+	var username;
+	
 	$(function(){
+		username = sessionStorage["usr"];
 		
 		$($("h1")[0]).text(conn);
 		
@@ -48,7 +61,6 @@
 		$("#send").click(function(){
 			var msg = $("#msg").val();
 			$("#msg").val("")
-			websocket.send(msg)
 		})
 	});
 	</script>
