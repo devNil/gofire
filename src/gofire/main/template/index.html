@@ -20,6 +20,11 @@
 			$("#messages").append($("<div>").text("Closed"))
 		}
 		
+		websocket.onopen = function(evt){
+			command.Value = window.btoa(username)
+			this.send(JSON.stringify(command))
+		}
+		
 			
 		websocket.onmessage = function(evt){
 			var obj = JSON.parse(evt.data);
@@ -28,11 +33,6 @@
 				name = "Anon"
 			}else{
 				name = obj.Usr.Name	
-			}
-			
-			if(obj.Msg === "with love"){
-				command.Value = window.btoa(username)
-				websocket.send(JSON.stringify(command))
 			}
 			
 			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
