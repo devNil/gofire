@@ -6,10 +6,23 @@ import(
 	"text/template"
 	"encoding/json"
 	"io/ioutil"
+	"fmt"
 )
 
 type User struct{
 	Name string
+}
+
+type CommandType int
+
+const(
+	REGISTER = iota //0
+	GETUSER			//1
+)
+
+type Command struct{
+	Type int
+	Value string
 }
 
 type Connection struct{
@@ -63,8 +76,24 @@ func (c *Connection)Read(){
 		if err != nil {
 			break
 		}
-		//TODO user
-		server.broadcast<-&Message{c.Usr, message}
+		
+		fmt.Println(message)
+		
+		var cmd *Command
+		
+		errm := json.Unmarshal([]byte(message), &cmd)
+		
+		fmt.Println(errm)
+		
+		if(errm != nil){
+			server.broadcast<-&Message{c.Usr, message}
+		}else{
+			if cmd.Type == REGISTER{
+				c.Usr = &User{Name:cmd.Value}
+			}
+			//c.Usr = user
+		}
+
 	}
 	c.Conn.Close()
 }
@@ -87,7 +116,7 @@ var server = Server{
 }
 
 func wsHandler(ws *websocket.Conn) {
-	c := &Connection{Usr: pendingUser,send: make(chan *Message), Conn: ws}
+	c := &Connection{Usr: nil,send: make(chan *Message), Conn: ws}
 	server.register <- c
 	defer func() {server.unregister <- c}()
 	go c.Write()
