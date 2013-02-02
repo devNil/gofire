@@ -3,12 +3,20 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Login</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8">
+	$(function(){
+		$("#sub").click(function(){
+			sessionStorage["usr"] = $("#username").val()
+		})
+	})
+	</script>
 </head>
 <body>
 	<h1>Login</login>
 	<form action="doLogin" method="post">
-		<input type="text" name="username">
-		<input type="submit">
+		<input type="text" name="username" id="username">
+		<input type="submit" id="sub">
 	</form>
 </body>
 </html>
