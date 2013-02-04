@@ -7,7 +7,10 @@ import(
 	"encoding/json"
 	"io/ioutil"
 	"fmt"
+	//"strconv"
 )
+
+const addr = ":8080"
 
 type User struct{
 	Name string
@@ -17,12 +20,13 @@ type CommandType int
 
 const(
 	REGISTER = iota //0
-	GETUSER			//1
+	MESSAGE			//1
+	GETHISTORY		//2
 )
 
 type Command struct{
 	Type int
-	Value string
+	Value []byte
 }
 
 type Connection struct{
@@ -40,6 +44,7 @@ type Message struct{
 }
 
 type Server struct{
+	history []*Message
 	broadcast chan *Message
 	register chan *Connection
 	unregister chan *Connection
@@ -56,6 +61,8 @@ func (s *Server)run(){
 			delete(server.registeredConnections, c)
 			close(c.send)
 		case m := <-server.broadcast:
+			//append to history
+			s.history = append(s.history, m)
 			for c := range s.registeredConnections {
 				select {
 				case c.send <- m:
@@ -82,15 +89,22 @@ func (c *Connection)Read(){
 		var cmd *Command
 		
 		errm := json.Unmarshal([]byte(message), &cmd)
-		
-		fmt.Println(errm)
-		
 		if(errm != nil){
-			server.broadcast<-&Message{c.Usr, message}
+			
 		}else{
-			if cmd.Type == REGISTER{
-				c.Usr = &User{Name:cmd.Value}
+			if cmd.Type == REGISTER {
+				c.Usr = &User{Name:string(cmd.Value)}
 			}
+			
+			if cmd.Type == MESSAGE {
+				server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+			}
+			
+			if cmd.Type == GETHISTORY {
+				r, _ := json.Marshal(server.history)
+				c.send<-&Message{&User{"history"}, string(r)}
+			}
+			
 			//c.Usr = user
 		}
 
@@ -101,6 +115,7 @@ func (c *Connection)Read(){
 func (c *Connection)Write(){
 	for message := range c.send {
 		jsonM, _ := json.Marshal(message)
+		fmt.Println(string(jsonM))
 		err := websocket.Message.Send(c.Conn, string(jsonM))
 		if err != nil {
 			break
@@ -109,6 +124,7 @@ func (c *Connection)Write(){
 }
 
 var server = Server{
+	history: make([]*Message, 0),
 	broadcast: make(chan *Message),
 	register: make(chan *Connection),
 	unregister: make(chan *Connection),
@@ -126,7 +142,11 @@ func wsHandler(ws *websocket.Conn) {
 //var indexTemplate = template.Must(template.ParseFiles("template/index.html"))
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	indexTemplate, _ := template.ParseFiles("template/index.html")
+	
+}
+
+func chatHandler(w http.ResponseWriter, r *http.Request){
+	indexTemplate, _ := template.ParseFiles("template/chat.html")
 	indexTemplate.Execute(w, r.Host)
 }
 
@@ -135,13 +155,13 @@ func doLogin(w http.ResponseWriter, r *http.Request){
 	
 	pendingUser = &User{r.Form["username"][0]}
 	
-	http.Redirect(w, r, "/index.html", http.StatusFound)
+	http.Redirect(w, r, "/chat.html", http.StatusFound)
 }
 
 var pendingUser *User
 
 func loginHandler(w http.ResponseWriter, r *http.Request){
-	html, err := ioutil.ReadFile("template/login.html")
+	html, err := ioutil.ReadFile("template/index.html")
 	if err != nil{
 		w.Write([]byte(err.Error()))
 		return
@@ -152,11 +172,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 
 func main(){
 	go server.run()
-	http.HandleFunc("/", mainHandler)
-	http.HandleFunc("/login.html", loginHandler)
+	http.HandleFunc("/", loginHandler)
+	http.HandleFunc("/chat.html", chatHandler)
 	http.HandleFunc("/doLogin", doLogin)
 	http.Handle("/ws", websocket.Handler(wsHandler))
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(addr, nil)
 	    if err != nil {
 	        panic("ListenAndServe: " + err.Error())
 	    }
