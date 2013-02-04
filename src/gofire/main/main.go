@@ -22,6 +22,7 @@ const(
 	REGISTER = iota //0
 	MESSAGE			//1
 	GETHISTORY		//2
+	BLOGIN
 )
 
 type Command struct{
@@ -103,6 +104,9 @@ func (c *Connection)Read(){
 			if cmd.Type == GETHISTORY {
 				r, _ := json.Marshal(server.history)
 				c.send<-&Message{&User{"history"}, string(r)}
+			}
+			if cmd.Type == BLOGIN {
+				server.broadcast<-&Message{c.Usr, string("Logged In")}
 			}
 			
 			//c.Usr = user
