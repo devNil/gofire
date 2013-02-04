@@ -5,12 +5,41 @@
 	<title>parser_test</title>
 	<script src="js/jquery-1.9.0.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" charset="utf-8">
+		var info = $("#info")
+			
+		var txt = "";
+
 		$(document).ready(function(){
+			
+			
+			
+			$("#thetext").keyup(function(event){
+				var chars = new Array();
+				var actualchars = $(this).val();
+				
+				var result = "";
+				
+				for(i = 0; i < actualchars.length; i++){
+					
+					if(actualchars[i] === "@"){
+						result += ("<strong style='color:#3BB9FF;'>@</strong>");
+					}else{
+						result += actualchars[i]
+					}
+					
+					
+				}
+				
+				$("#info").html(result);
+			});
+			
 			$("#submit").click(function(){
 				var text = $("#thetext").val();
 				parse(text);
 			});
 		});
+		
+
 		
 		var Scanner = function Scanner(text){
 			this.text = text;
