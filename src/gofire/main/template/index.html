@@ -2,85 +2,21 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>gochat-Test</title>
+	<title>Login</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
-	var conn = "ws://{{$}}/ws"
-	
-	var websocket;
-	
-	var command = {"Type":0,"Value":""}
-	var REGISTER = 0
-	var MESSAGE = 1
-	
-	function connect(){
-		websocket = new WebSocket(conn)
-		
-		websocket.onclose = function(evt){
-			$("#messages").append($("<div>").text("Closed"))
-		}
-		
-		websocket.onopen = function(evt){
-			command.Value = window.btoa(username)
-			this.send(JSON.stringify(command))
-		}
-		
-			
-		websocket.onmessage = function(evt){
-			var obj = JSON.parse(evt.data);
-			var name;
-			if(!obj.Usr){
-				name = "Anon"
-			}else{
-				name = obj.Usr.Name	
-			}
-			
-			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
-		}
-		
-	}
-	
-	var username;
-	
 	$(function(){
-		username = sessionStorage["usr"];
-		
-		$($("h1")[0]).text(conn);
-		
-		connect();
-		
-		$("#msg").keyup(function(event){
-			if(event.which === 13){
-				var msg = $("#msg").val();
-				$("#msg").val("")
-				command.Type = MESSAGE
-				command.Value = window.btoa(msg)
-				websocket.send(JSON.stringify(command))
-				event.preventDefault()
-			}
+		$("#sub").click(function(){
+			sessionStorage["usr"] = $("#username").val()
 		})
-		
-		$("#send").click(function(){
-			var msg = $("#msg").val();
-			$("#msg").val("")
-		})
-	});
+	})
 	</script>
-	<style type="text/css" media="screen">
-		h1{
-			font-size:18px;
-		}
-		#messages{
-			width:640px;
-			height:480px;
-			background-color:#EEEEEE;
-		}
-	</style>
 </head>
 <body>
-	<h1></h1>
-	<div id="messages">
-	</div>
-	<input type="text" id="msg"><button id="send">Send</button>
+	<h1>Login</login>
+	<form action="doLogin" method="post">
+		<input type="text" name="username" id="username">
+		<input type="submit" id="sub">
+	</form>
 </body>
 </html>
