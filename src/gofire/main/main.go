@@ -23,6 +23,7 @@ const(
 	MESSAGE			//1
 	GETHISTORY		//2
 	BLOGIN
+	BLOGOUT
 )
 
 type Command struct{
@@ -107,6 +108,10 @@ func (c *Connection)Read(){
 			}
 			if cmd.Type == BLOGIN {
 				server.broadcast<-&Message{c.Usr, string("Logged In")}
+			}
+			
+			if cmd.Type == BLOGOUT {
+				fmt.Println("Somebody wants to logout")
 			}
 			
 			//c.Usr = user
