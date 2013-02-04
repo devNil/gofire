@@ -14,6 +14,7 @@
 	var MESSAGE = 1
 	var GETHISTORY = 2
 	
+	
 	function connect(){
 		websocket = new WebSocket(conn)
 		
@@ -41,10 +42,10 @@
 			}
 			
 			if(obj.Usr && obj.Usr.Name === "history"){
-				var arr = Array(obj.Msg)
-				for(var i = 0; i < arr.length; i++){
-					$("#messages").append($("<div/>").text(arr[i].Usr.Name+" | "+arr[i].Usr.Name))
-				}
+				//var arr = Array(obj.Msg)
+				//for(var i = 0; i < arr.length; i++){
+				//	$("#messages").append($("<div/>").text(arr[i].Usr.Name+" | "+arr[i].Usr.Name))
+				//}
 				console.log(obj)
 			}else{
 				$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
