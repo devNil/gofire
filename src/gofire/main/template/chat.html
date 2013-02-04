@@ -9,10 +9,11 @@
 	
 	var websocket;
 	
-	var command = {"Type":0,"Value":""}
-	var REGISTER = 0
-	var MESSAGE = 1
-	var GETHISTORY = 2
+	const command = {"Type":0,"Value":""}
+	const REGISTER = 0
+	const MESSAGE = 1
+	const GETHISTORY = 2
+	const BLOGIN = 3
 	
 	
 	function connect(){
@@ -23,10 +24,15 @@
 		}
 		
 		websocket.onopen = function(evt){
+			command.Type = REGISTER 
 			command.Value = window.btoa(username)
 			this.send(JSON.stringify(command))
 			
 			command.Type = GETHISTORY
+			command.Value = window.btoa("")
+			this.send(JSON.stringify(command))
+
+			command.Type = BLOGIN
 			command.Value = window.btoa("")
 			this.send(JSON.stringify(command))
 		}
