@@ -28,13 +28,16 @@
 			command.Value = window.btoa(username)
 			this.send(JSON.stringify(command))
 			
+			
+			command.Type = BLOGIN
+			command.Value = window.btoa("")
+			this.send(JSON.stringify(command))
+			
 			command.Type = GETHISTORY
 			command.Value = window.btoa("")
 			this.send(JSON.stringify(command))
 
-			command.Type = BLOGIN
-			command.Value = window.btoa("")
-			this.send(JSON.stringify(command))
+
 		}
 		
 			
@@ -47,15 +50,16 @@
 				name = obj.Usr.Name
 			}
 			
-			if(obj.Usr && obj.Usr.Name === "history"){
+			/*if(obj.Usr && obj.Usr.Name === "history"){
 				//var arr = Array(obj.Msg)
 				//for(var i = 0; i < arr.length; i++){
 				//	$("#messages").append($("<div/>").text(arr[i].Usr.Name+" | "+arr[i].Usr.Name))
 				//}
 				console.log(obj)
-			}else{
-				$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
-			}
+			}else{*/
+				
+			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
+				//}
 		}
 		
 	}
@@ -83,6 +87,11 @@
 		$("#send").click(function(){
 			var msg = $("#msg").val();
 			$("#msg").val("")
+			command.Type = MESSAGE
+			command.Value = window.btoa(msg)
+			websocket.send(JSON.stringify(command))
+			event.preventDefault()
+			
 		})
 	});
 	</script>
