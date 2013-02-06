@@ -21,7 +21,6 @@ type CommandType int
 const(
 	REGISTER = iota //0
 	MESSAGE			//1
-	GETHISTORY		//2
 	BLOGIN
 	BLOGOUT
 )
@@ -59,6 +58,10 @@ func (s *Server)run(){
 		case c := <-server.register:
 			server.registeredConnections[c] = true
 			c.send<-&Message{&User{"From server"}, "with love"}
+			//send the history to a new user
+			for _, message := range s.history {
+				c.send<- message
+			}
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
@@ -102,10 +105,6 @@ func (c *Connection)Read(){
 				server.broadcast<-&Message{c.Usr, string(cmd.Value)}
 			}
 
-			if cmd.Type == GETHISTORY {
-				r, _ := json.Marshal(server.history)
-				c.send<-&Message{&User{"history"}, string(r)}
-			}
 			if cmd.Type == BLOGIN {
 				server.broadcast<-&Message{c.Usr, string("Logged In")}
 			}
