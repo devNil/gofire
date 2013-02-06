@@ -103,6 +103,13 @@ func (c *Connection)Read(){
 
 		}else{
 			if cmd.Type == REGISTER {
+				for d := range server.registeredConnections {
+					if d != nil && d.Usr.Name == string(cmd.Value) {
+						c.send <-&Message{&User{"From Server"}, "Sorry name already used"}
+						server.unregister<-c
+						c.Conn.Close()
+					}
+				}
 				c.Usr = &User{Name:string(cmd.Value)}
 			}
 
