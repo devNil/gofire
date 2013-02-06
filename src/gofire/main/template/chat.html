@@ -62,7 +62,6 @@
 		$("#msg").keyup(function(event){
 			if(event.which === 13){
 				var msg = $("#msg").val();
-				$("#msg").val("")
 				command.Type = MESSAGE
 				command.Value = window.btoa(msg)
 				websocket.send(JSON.stringify(command))
@@ -72,7 +71,6 @@
 		
 		$("#send").click(function(){
 			var msg = $("#msg").val();
-			$("#msg").val("")
 			command.Type = MESSAGE
 			command.Value = window.btoa(msg)
 			websocket.send(JSON.stringify(command))

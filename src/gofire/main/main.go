@@ -7,6 +7,8 @@ import(
 	"encoding/json"
 	"io/ioutil"
 	"fmt"
+	"strings"
+	"regexp"
 	//"strconv"
 )
 
@@ -92,7 +94,7 @@ func (c *Connection)Read(){
 		fmt.Println(message)
 
 		var cmd *Command
-
+		var user_name string
 		errm := json.Unmarshal([]byte(message), &cmd)
 		if(errm != nil){
 
@@ -102,7 +104,26 @@ func (c *Connection)Read(){
 			}
 
 			if cmd.Type == MESSAGE {
-				server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+				r,_ := regexp.MatchString("@", string(cmd.Value))
+				if r {
+					var found bool = false
+					user_name = strings.Split(string(cmd.Value), " ")[0]
+					user_name = strings.Split(user_name, "@")[1]
+					fmt.Println(user_name)
+					for d := range server.registeredConnections {
+						if d.Usr.Name == user_name {
+							d.send <-&Message{c.Usr, string(cmd.Value)}
+							found = true
+						}
+					}
+					if(found) {
+						c.send <-&Message{c.Usr, string(cmd.Value)}
+					} else {
+						c.send <-&Message{&User{"From server"},"user not found"}
+					}
+				} else {
+					server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+				}
 			}
 
 			if cmd.Type == BLOGIN {
