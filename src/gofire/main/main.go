@@ -85,23 +85,23 @@ func (c *Connection)Read(){
 		if err != nil {
 			break
 		}
-		
+
 		fmt.Println(message)
-		
+
 		var cmd *Command
-		
+
 		errm := json.Unmarshal([]byte(message), &cmd)
 		if(errm != nil){
-			
+
 		}else{
 			if cmd.Type == REGISTER {
 				c.Usr = &User{Name:string(cmd.Value)}
 			}
-			
+
 			if cmd.Type == MESSAGE {
 				server.broadcast<-&Message{c.Usr, string(cmd.Value)}
 			}
-			
+
 			if cmd.Type == GETHISTORY {
 				r, _ := json.Marshal(server.history)
 				c.send<-&Message{&User{"history"}, string(r)}
@@ -109,11 +109,11 @@ func (c *Connection)Read(){
 			if cmd.Type == BLOGIN {
 				server.broadcast<-&Message{c.Usr, string("Logged In")}
 			}
-			
+
 			if cmd.Type == BLOGOUT {
 				fmt.Println("Somebody wants to logout")
 			}
-			
+
 			//c.Usr = user
 		}
 
@@ -151,7 +151,7 @@ func wsHandler(ws *websocket.Conn) {
 //var indexTemplate = template.Must(template.ParseFiles("template/index.html"))
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	
+
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request){
@@ -161,9 +161,9 @@ func chatHandler(w http.ResponseWriter, r *http.Request){
 
 func doLogin(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
-	
+
 	pendingUser = &User{r.Form["username"][0]}
-	
+
 	http.Redirect(w, r, "/chat.html", http.StatusFound)
 }
 
@@ -175,7 +175,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 		w.Write([]byte(err.Error()))
 		return
 	}
-	
+
 	w.Write(html)
 }
 
