@@ -173,8 +173,43 @@ func wsHandler(ws *websocket.Conn) {
 
 //var indexTemplate = template.Must(template.ParseFiles("template/index.html"))
 
-func mainHandler(w http.ResponseWriter, r *http.Request) {
+const staticDir = "template/"
 
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+	path := staticDir+r.URL.Path[1:]
+	
+	data, err := openFile(path)
+	if(err == nil){
+		fmt.Println(path[len(path)-3:])
+		if(path[len(path)-3:] == "css"){
+			
+			w.Header().Set("Content-Type", STYLECSS)
+		}
+		
+		if(path[len(path)-2:] == "js"){
+			
+			w.Header().Set("Content-Type", JAVASCRIPT)
+		}
+		
+		w.Write(data)
+	}else{
+		//Write back 404	
+		fmt.Println(path)
+	}
+}
+
+const(
+	TEXTPLAIN string = "text/plain"
+	STYLECSS string = "text/css"
+	JAVASCRIPT string = "application/x-javascript"
+)
+
+func openFile(path string)([]byte, error){
+	data ,err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return data , nil
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request){
