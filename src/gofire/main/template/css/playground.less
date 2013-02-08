@@ -10,7 +10,7 @@ h1{
 	font-size: 3em;
 	text-align:left;
 	letter-spacing:4px;
-	padding:0px 0px 0px 30px;
+	margin:0px 0px 0px 30px;
 }
 
 div#chatwindow{
@@ -21,5 +21,20 @@ div#chatwindow{
 	margin-left: -640/2px;
 	width:640px;
 	height:480px;
+	.special-box-shadow;
+}
+
+div#statusbar{
+	position:fixed;
+	z-index: -1;
+	top:0px;
+	left:0px;
+	height:35px;
+	width:100%;
+	text-align:right;
+	color:white;
+	background-color:@cgolang;
+	line-height:35px;
+	font-size:2em;
 	.special-box-shadow;
 }
