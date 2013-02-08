@@ -98,28 +98,31 @@ func (c *Connection)Read(){
 
 		var cmd *Command
 		var user_name string
+		var found bool
 		errm := json.Unmarshal([]byte(message), &cmd)
 		if(errm != nil){
 
 		}else{
 			if cmd.Type == REGISTER {
+				//check if user name already is taken.
 				for d := range server.registeredConnections {
-					if d != nil && d.Usr.Name == string(cmd.Value) {
-						c.send <-&Message{&User{"From Server"}, "Sorry name already used"}
-						server.unregister<-c
-						c.Conn.Close()
+					if d.Usr != nil && d.Usr.Name == string(cmd.Value) {
+						found = true
 					}
 				}
-				c.Usr = &User{Name:string(cmd.Value)}
+				if found {
+					break
+				} else {
+					c.Usr = &User{Name:string(cmd.Value)}
+				}
 			}
 
 			if cmd.Type == MESSAGE {
 				r,_ := regexp.MatchString("@", string(cmd.Value))
 				if r {
-					var found bool = false
+					found = false
 					user_name = strings.Split(string(cmd.Value), " ")[0]
 					user_name = strings.Split(user_name, "@")[1]
-					fmt.Println(user_name)
 					for d := range server.registeredConnections {
 						if d.Usr.Name == user_name {
 							d.send <-&Message{c.Usr, cmd.Value}
@@ -144,7 +147,6 @@ func (c *Connection)Read(){
 				fmt.Println("Somebody wants to logout")
 			}
 
-			//c.Usr = user
 		}
 
 	}
