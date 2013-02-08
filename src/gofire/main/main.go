@@ -180,14 +180,8 @@ func chatHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func doLogin(w http.ResponseWriter, r *http.Request){
-	r.ParseForm()
-
-	pendingUser = &User{r.Form["username"][0]}
-
 	http.Redirect(w, r, "/chat.html", http.StatusFound)
 }
-
-var pendingUser *User
 
 func loginHandler(w http.ResponseWriter, r *http.Request){
 	html, err := ioutil.ReadFile("template/index.html")
