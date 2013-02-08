@@ -61,10 +61,12 @@ func (s *Server)run(){
 			server.registeredConnections[c] = true
 			c.send<-&Message{&User{"From server"}, []byte("with love")}
 			
+			jsonU, _ := json.Marshal(s.history)
+			c.send<-&Message{&User{"All user"}, jsonU}
 			//send the history to a new user
-			for _, message := range s.history {
+			/*for _, message := range s.history {
 				c.send<- message
-			}
+			}*/
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
