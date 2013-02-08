@@ -21,6 +21,8 @@ div#chatwindow{
 	margin-left: -640/2px;
 	width:640px;
 	height:480px;
+	//auto scroll
+	overflow: auto;
 	.special-box-shadow;
 }
 
@@ -35,6 +37,20 @@ div#statusbar{
 	color:white;
 	background-color:@cgolang;
 	line-height:35px;
-	font-size:2em;
-	.special-box-shadow;
+	font-size:1.7em;
+}
+div.chatentry{
+	width:100%;
+	font-size:1em;
+	line-height:1.5em;
+	height:1.5em;
+	//background-color:#FF00FF;
+}
+
+div.statusentry{
+	width:95%;
+	margin-left:5%;
+	font-size:1em;
+	line-height:1.5em;
+	height:1.5em;
 }
