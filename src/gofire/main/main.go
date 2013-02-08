@@ -198,7 +198,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 
 func main(){
 	go server.run()
-	http.HandleFunc("/", loginHandler)
+	http.HandleFunc("/", mainHandler)
+	http.HandleFunc("/index.html", loginHandler)
 	http.HandleFunc("/chat.html", chatHandler)
 	http.HandleFunc("/doLogin", doLogin)
 	http.Handle("/ws", websocket.Handler(wsHandler))
