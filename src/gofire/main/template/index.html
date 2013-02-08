@@ -7,7 +7,15 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
 	$(function(){
-		$("#username").keyup(function(){
+		//don't send form with empty user
+		$("#username").keydown(function(event){
+			if(event.keyCode == 13 && $(this).val().length == 0){
+				event.preventDefault();
+				return false;
+			}
+		});
+		
+		$("#username").keyup(function(event){
 			if($(this).val().length != 0){
 				$("#sub").removeAttr('disabled');
 			}else{
