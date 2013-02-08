@@ -12,8 +12,7 @@
 	const command = {"Type":0,"Value":""}
 	const REGISTER = 0
 	const MESSAGE = 1
-	const GETHISTORY = 2
-	const BLOGIN = 3
+	const BLOGIN = 2
 	
 	
 	function connect(){
@@ -28,13 +27,13 @@
 			command.Value = window.btoa(username)
 			this.send(JSON.stringify(command))
 			
-			command.Type = GETHISTORY
-			command.Value = window.btoa("")
-			this.send(JSON.stringify(command))
-
+			
 			command.Type = BLOGIN
 			command.Value = window.btoa("")
 			this.send(JSON.stringify(command))
+			
+
+
 		}
 		
 			
@@ -46,16 +45,7 @@
 			}else{
 				name = obj.Usr.Name
 			}
-			
-			if(obj.Usr && obj.Usr.Name === "history"){
-				//var arr = Array(obj.Msg)
-				//for(var i = 0; i < arr.length; i++){
-				//	$("#messages").append($("<div/>").text(arr[i].Usr.Name+" | "+arr[i].Usr.Name))
-				//}
-				console.log(obj)
-			}else{
-				$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
-			}
+			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
 		}
 		
 	}
@@ -72,7 +62,6 @@
 		$("#msg").keyup(function(event){
 			if(event.which === 13){
 				var msg = $("#msg").val();
-				$("#msg").val("")
 				command.Type = MESSAGE
 				command.Value = window.btoa(msg)
 				websocket.send(JSON.stringify(command))
@@ -82,7 +71,11 @@
 		
 		$("#send").click(function(){
 			var msg = $("#msg").val();
-			$("#msg").val("")
+			command.Type = MESSAGE
+			command.Value = window.btoa(msg)
+			websocket.send(JSON.stringify(command))
+			event.preventDefault()
+			
 		})
 	});
 	</script>

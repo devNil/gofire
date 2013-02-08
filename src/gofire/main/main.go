@@ -7,6 +7,8 @@ import(
 	"encoding/json"
 	"io/ioutil"
 	"fmt"
+	"strings"
+	"regexp"
 	//"strconv"
 )
 
@@ -21,7 +23,6 @@ type CommandType int
 const(
 	REGISTER = iota //0
 	MESSAGE			//1
-	GETHISTORY		//2
 	BLOGIN
 	BLOGOUT
 )
@@ -59,6 +60,10 @@ func (s *Server)run(){
 		case c := <-server.register:
 			server.registeredConnections[c] = true
 			c.send<-&Message{&User{"From server"}, "with love"}
+			//send the history to a new user
+			for _, message := range s.history {
+				c.send<- message
+			}
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
@@ -85,35 +90,50 @@ func (c *Connection)Read(){
 		if err != nil {
 			break
 		}
-		
+
 		fmt.Println(message)
-		
+
 		var cmd *Command
-		
+		var user_name string
 		errm := json.Unmarshal([]byte(message), &cmd)
 		if(errm != nil){
-			
+
 		}else{
 			if cmd.Type == REGISTER {
 				c.Usr = &User{Name:string(cmd.Value)}
 			}
-			
+
 			if cmd.Type == MESSAGE {
-				server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+				r,_ := regexp.MatchString("@", string(cmd.Value))
+				if r {
+					var found bool = false
+					user_name = strings.Split(string(cmd.Value), " ")[0]
+					user_name = strings.Split(user_name, "@")[1]
+					fmt.Println(user_name)
+					for d := range server.registeredConnections {
+						if d.Usr.Name == user_name {
+							d.send <-&Message{c.Usr, string(cmd.Value)}
+							found = true
+						}
+					}
+					if(found) {
+						c.send <-&Message{c.Usr, string(cmd.Value)}
+					} else {
+						c.send <-&Message{&User{"From server"},"user not found"}
+					}
+				} else {
+					server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+				}
 			}
-			
-			if cmd.Type == GETHISTORY {
-				r, _ := json.Marshal(server.history)
-				c.send<-&Message{&User{"history"}, string(r)}
-			}
+
 			if cmd.Type == BLOGIN {
 				server.broadcast<-&Message{c.Usr, string("Logged In")}
 			}
-			
+
 			if cmd.Type == BLOGOUT {
 				fmt.Println("Somebody wants to logout")
 			}
-			
+
 			//c.Usr = user
 		}
 
@@ -151,7 +171,7 @@ func wsHandler(ws *websocket.Conn) {
 //var indexTemplate = template.Must(template.ParseFiles("template/index.html"))
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	
+
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request){
@@ -161,9 +181,9 @@ func chatHandler(w http.ResponseWriter, r *http.Request){
 
 func doLogin(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
-	
+
 	pendingUser = &User{r.Form["username"][0]}
-	
+
 	http.Redirect(w, r, "/chat.html", http.StatusFound)
 }
 
@@ -175,7 +195,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 		w.Write([]byte(err.Error()))
 		return
 	}
-	
+
 	w.Write(html)
 }
 
