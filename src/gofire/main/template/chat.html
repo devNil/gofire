@@ -45,7 +45,19 @@
 			}else{
 				name = obj.Usr.Name
 			}
-			$("#messages").append($("<div/>").text(name+" | "+obj.Msg))
+			
+			if(name === "All user"){
+				var messageArray = JSON.parse(window.atob(obj.Msg))
+				
+				for(i = 0; i< messageArray.length; i++){
+					var message = messageArray[i];
+					$("#messages").append($("<div/>").text(message.Usr.Name+" | "+window.atob(message.Msg)));
+				}
+				
+			}else{
+				$("#messages").append($("<div/>").text(name+" | "+window.atob(obj.Msg)));
+			}
+			
 		}
 		
 	}
