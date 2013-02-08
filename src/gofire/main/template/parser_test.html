@@ -11,7 +11,9 @@
 
 		$(document).ready(function(){
 			
-			
+			$("#info").click(function(){
+				$("#thetext").focus()
+			})
 			
 			$("#thetext").keyup(function(event){
 				var chars = new Array();
@@ -141,9 +143,18 @@
 			
 		}
 	</script>
+	<style type="text/css" media="screen">
+		#info{
+			display:inline-block;
+			-webkit-appearance:field;
+			width:180px;
+			border:1px black solid;
+			height:25px;
+		}
+	</style>
 </head>
 <body>
-	<input type="text" id="thetext"/><button id="submit">SUB</button>
-	<div id="info"></div>
+	<input type="text" id="thetext" style="display:hodden;opacity:0;width:180px"/><span id="info"></span><button id="submit">SUB</button>
+	
 </body>
 <html>
