@@ -1,3 +1,35 @@
 body{
-	background:grey;
+	font-family:Tahoma,Arial;
+}
+
+h1{
+color:#FFF;
+text-shadow: 1px 1px 0px #888,
+			-1px -1px 0px #888,
+			-1px 1px 0px #888,
+			1px -1px 0px #888;
+font-size: 5em;
+text-align:center;
+}
+
+#login{
+	display:block;
+	width: 500px;
+	height: 190px;
+	margin:0 auto;
+}
+input{
+	padding: 5px;
+	font-size: 2em;
+}
+#sub{
+	background-color:#375EAB;
+	font-family:Tahoma,Arial;
+	color:white;
+	border: 0px;
+}
+
+footer{
+position:fixed;
+   bottom:0px;
 }
