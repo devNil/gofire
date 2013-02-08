@@ -43,7 +43,7 @@ type Connection struct{
 
 type Message struct{
 	Usr *User
-	Msg string
+	Msg []byte
 }
 
 type Server struct{
@@ -59,7 +59,8 @@ func (s *Server)run(){
 		select {
 		case c := <-server.register:
 			server.registeredConnections[c] = true
-			c.send<-&Message{&User{"From server"}, "with love"}
+			c.send<-&Message{&User{"From server"}, []byte("with love")}
+			
 			//send the history to a new user
 			for _, message := range s.history {
 				c.send<- message
@@ -112,22 +113,22 @@ func (c *Connection)Read(){
 					fmt.Println(user_name)
 					for d := range server.registeredConnections {
 						if d.Usr.Name == user_name {
-							d.send <-&Message{c.Usr, string(cmd.Value)}
+							d.send <-&Message{c.Usr, cmd.Value}
 							found = true
 						}
 					}
 					if(found) {
-						c.send <-&Message{c.Usr, string(cmd.Value)}
+						c.send <-&Message{c.Usr, cmd.Value}
 					} else {
-						c.send <-&Message{&User{"From server"},"user not found"}
+						c.send <-&Message{&User{"From server"},[]byte("user not found")}
 					}
 				} else {
-					server.broadcast<-&Message{c.Usr, string(cmd.Value)}
+					server.broadcast<-&Message{c.Usr, cmd.Value}
 				}
 			}
 
 			if cmd.Type == BLOGIN {
-				server.broadcast<-&Message{c.Usr, string("Logged In")}
+				server.broadcast<-&Message{c.Usr, []byte("Logged In")}
 			}
 
 			if cmd.Type == BLOGOUT {
