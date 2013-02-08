@@ -1,0 +1,50 @@
+@cgolang: #375EAB;
+
+//line-shadow primary for the logo
+.special-line-shadow (@blur: 2px,@color: #888) {
+	text-shadow:1px 1px @blur @color,
+			-1px -1px @blur @color,
+			-1px 1px @blur @color,
+			1px -1px @blur @color;
+}
+
+h1{
+	color:#FFF;
+	.special-line-shadow;
+	font-size: 5em;
+	text-align:center;
+	letter-spacing:4px;
+}
+
+#login{
+	display:block;
+	width: 500px;
+	height: 190px;
+	margin:0 auto;
+}
+
+input{
+	padding: 5px;
+	font-size: 2em;
+}
+#sub{
+	background-color:#375EAB;
+	font-family:Tahoma,Arial;
+	color:white;
+	border: 0px;
+	border-radius: 5px;
+}
+
+#sub:disabled{
+	opacity:0.3;
+}
+
+footer{
+	width:100%;
+	height:2em;
+	text-align:center;
+	position:absolute;
+	bottom:0px;
+	padding:5px;
+	font-size:1em;
+}
