@@ -1,10 +1,25 @@
 @import "base";
 
+.special-box-shadow(@blur:2px, @color:#888){
+	box-shadow: 1px 1px @blur @color, -1px -1px @blur @color, -1px 1px @blur @color, 1px -1px @blur @color;
+}
+
 h1{
 	color:#FFF;
 	.special-line-shadow;
-	font-size: 5em;
+	font-size: 3em;
 	text-align:left;
 	letter-spacing:4px;
 	padding:0px 0px 0px 30px;
+}
+
+div#chatwindow{
+	position:absolute;
+	z-index: 1;
+	//fix for centering absolute position
+	left:50%;
+	margin-left: -640/2px;
+	width:640px;
+	height:480px;
+	.special-box-shadow;
 }
