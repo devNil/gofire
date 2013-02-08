@@ -31,6 +31,10 @@ input{
 	border-radius: 5px;
 }
 
+#sub:disabled{
+	opacity:0.3;
+}
+
 footer{
 	width:100%;
 	height:2em;
