@@ -27,6 +27,7 @@ input{
 	font-family:Tahoma,Arial;
 	color:white;
 	border: 0px;
+	border-radius: 5px;
 }
 
 footer{
