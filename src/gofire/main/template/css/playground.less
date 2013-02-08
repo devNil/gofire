@@ -14,16 +14,12 @@ h1{
 }
 
 div#chatwindow{
-	position:absolute;
 	z-index: 1;
 	//fix for centering absolute position
-	left:50%;
-	margin-left: -640/2px;
-	width:640px;
 	height:480px;
+	border-bottom:1px #888 solid;
 	//auto scroll
 	overflow: auto;
-	.special-box-shadow;
 }
 
 div#statusbar{
@@ -56,4 +52,33 @@ div.statusentry{
 	line-height:1.5em;
 	height:1.5em;
 	border-bottom:1px #888 solid;
+}
+
+div#inputset{
+	width:640px;
+	height:80px
+	margin:0 auto;
+}
+
+input#message{
+	width:400px;
+	font-size: 2em;
+	border-radius: 5px;
+}
+
+button#sendbutton{
+	font-size: 2em;
+	background-color:@cgolang;
+	color:white;
+	border: 1px white;
+	border-radius: 5px;
+}
+
+content{
+	left:50%;
+	position:absolute;
+	margin-left: -640/2px;
+	width:640px;
+	height:480+80px;
+	.special-box-shadow;
 }
