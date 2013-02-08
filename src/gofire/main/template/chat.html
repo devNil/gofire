@@ -13,7 +13,7 @@
 	const REGISTER = 0
 	const MESSAGE = 1
 	const BLOGIN = 2
-	
+	const BLOGOUT = 3
 	
 	function connect(){
 		websocket = new WebSocket(conn)
@@ -89,6 +89,13 @@
 			event.preventDefault()
 			
 		})
+
+		$("#logout").click(function(){
+			command.Type = BLOGOUT			
+			command.Value = window.btoa("")
+			websocket.send(JSON.stringify(command))
+
+		})
 	});
 	</script>
 	<style type="text/css" media="screen">
@@ -107,5 +114,6 @@
 	<div id="messages">
 	</div>
 	<input type="text" id="msg"><button id="send">Send</button>
+	<button id="logout">Logout</button>
 </body>
 </html>

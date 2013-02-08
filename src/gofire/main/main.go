@@ -60,13 +60,9 @@ func (s *Server)run(){
 		case c := <-server.register:
 			server.registeredConnections[c] = true
 			c.send<-&Message{&User{"From server"}, []byte("with love")}
-			
 			jsonU, _ := json.Marshal(s.history)
+			//send history to new user 
 			c.send<-&Message{&User{"All user"}, jsonU}
-			//send the history to a new user
-			/*for _, message := range s.history {
-				c.send<- message
-			}*/
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
@@ -118,6 +114,7 @@ func (c *Connection)Read(){
 			}
 
 			if cmd.Type == MESSAGE {
+				//check if the message is a private message. 
 				r,_ := regexp.MatchString("@", string(cmd.Value))
 				if r {
 					found = false
@@ -134,6 +131,7 @@ func (c *Connection)Read(){
 					} else {
 						c.send <-&Message{&User{"From server"},[]byte("user not found")}
 					}
+				//else send the message to everyone 
 				} else {
 					server.broadcast<-&Message{c.Usr, cmd.Value}
 				}
@@ -144,7 +142,8 @@ func (c *Connection)Read(){
 			}
 
 			if cmd.Type == BLOGOUT {
-				fmt.Println("Somebody wants to logout")
+				server.broadcast<-&Message{c.Usr, []byte("Logged Out")}
+				break
 			}
 
 		}
