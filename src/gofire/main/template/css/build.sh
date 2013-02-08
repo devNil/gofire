@@ -1,6 +1,16 @@
 #!/bin/bash
 #build all less files
-for filename in *.less 
-do
-	lessc "$filename" "${filename%.*}.css"
-done
+if [ $1 == -b ]
+	then
+	for filename in *.less 
+	do
+		lessc "$filename" "${filename%.*}.css"
+	done
+fi
+if [ $1 == -c ]
+	then
+	for filename in *.css 
+	do
+		rm "$filename"
+	done
+fi
