@@ -17,9 +17,9 @@
 		
 		$("#username").keyup(function(event){
 			if($(this).val().length != 0){
-				$("#sub").removeAttr('disabled');
+				$("#submitbutton").removeAttr('disabled');
 			}else{
-				$("#sub").attr('disabled', 'disabled');
+				$("#submitbutton").attr('disabled', 'disabled');
 			}
 		});
 		
@@ -31,11 +31,11 @@
 </head>
 <body>
 	<h1>gofire</h1>
-	<div id="login">
-	<form action="doLogin" method="post">
-		<input type="text" name="username" id="username" placeholder="Username">
-		<input type="submit" id="sub" value="Login" disabled="disabled">
-	</form>
+	<div id="loginwrapper">
+		<form action="doLogin" method="post">
+			<input type="text" name="username" id="username" placeholder="Username">
+			<input type="submit" id="submitbutton" value="Login" disabled="disabled">
+		</form>
 	</div>
 	<footer>
 		WE LOVE THE GO CODE CUZ GOOGLE'S GOOD TO US!!!!
