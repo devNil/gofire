@@ -166,4 +166,5 @@ pip-log.txt
 #own shit
 
 src/code.google.com/*
+*.css
 
