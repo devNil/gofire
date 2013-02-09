@@ -78,6 +78,8 @@
 				command.Value = window.btoa(msg)
 				websocket.send(JSON.stringify(command))
 				event.preventDefault()
+				//reset the input box
+				$("#msg").val("")
 			}
 		})
 		
@@ -87,7 +89,9 @@
 			command.Value = window.btoa(msg)
 			websocket.send(JSON.stringify(command))
 			event.preventDefault()
-			
+			//reset the input box and reset the focus.
+			$("#msg").val("")
+			$("#msg").focus();
 		})
 
 		$("#logout").click(function(){
