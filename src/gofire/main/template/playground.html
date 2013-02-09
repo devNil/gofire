@@ -4,6 +4,33 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="/css/playground.css" type="text/css" media="all" charset="utf-8">
 	<title>Playground</title>
+	<script src="js/jquery-1.9.0.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			function defaultAction(e) {
+			        e.preventDefault();
+			        e.stopPropagation();
+			    }
+			
+			function handleDrop(e) {
+		  	  e.stopPropagation(); // Stops some browsers from redirecting.
+			  e.preventDefault();
+		  	
+			  console.log("drop");
+		  
+			  var files = e.dataTransfer.files;
+			  for (var i = 0, f; f = files[i]; i++) {
+				  console.log(f);
+		  }
+		
+		};
+		
+		document.body.addEventListener('dragover', defaultAction, false);
+		document.body.addEventListener('dragenter', defaultAction, false);
+		document.body.addEventListener('drop', handleDrop, false);
+		
+	});
+	</script>
 </head>
 <body>
 	<h1>gofire</h1>
