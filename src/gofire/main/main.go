@@ -201,8 +201,8 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		
 		w.Write(data)
 	}else{
-		//Write back 404	
-		fmt.Println(path)
+		//using standard notfound impl.
+		http.NotFound(w, r)
 	}
 }
 
