@@ -21,6 +21,12 @@
 			  var files = e.dataTransfer.files;
 			  for (var i = 0, f; f = files[i]; i++) {
 				  console.log(f);
+				  var xhr = new XMLHttpRequest();
+				  var data = new FormData();
+				  data.append("File", f);
+				  xhr.open("POST", "/upload", true);
+				  xhr.send(data);
+				  //console.log(reader.readAsDataURL(f));
 		  }
 		
 		};
