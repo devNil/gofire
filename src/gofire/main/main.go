@@ -238,9 +238,28 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 
 	w.Write(html)
 }
+//writes the file
+func uploadHandler(w http.ResponseWriter, r *http.Request){
+	file, handler, err := r.FormFile("File") 
+	
+	if err == nil {
+		fmt.Println(file)
+	}
+	
+    data, err := ioutil.ReadAll(file) 
+    if err != nil { 
+           fmt.Println(err) 
+    }
+	 
+    err = ioutil.WriteFile(handler.Filename, data, 0777) 
+    if err != nil { 
+           fmt.Println(err) 
+    } 
+}
 
 func main(){
 	go server.run()
+	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/index.html", loginHandler)
 	http.HandleFunc("/chat.html", chatHandler)
