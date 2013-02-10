@@ -242,8 +242,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request){
 func uploadHandler(w http.ResponseWriter, r *http.Request){
 	file, handler, err := r.FormFile("File") 
 	
-	if err == nil {
-		fmt.Println(file)
+	if err != nil {
+		fmt.Println(err)
 	}
 	
     data, err := ioutil.ReadAll(file) 
