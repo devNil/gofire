@@ -1,38 +1,38 @@
 package main
 
-import(
+import (
 	"code.google.com/p/go.net/websocket"
-	"net/http"
-	"text/template"
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
-	"strings"
+	"io/ioutil"
+	"net/http"
 	"regexp"
+	"strings"
+	"text/template"
 	//"strconv"
 )
 
 const addr = ":8080"
 
-type User struct{
+type User struct {
 	Name string
 }
 
 type CommandType int
 
-const(
+const (
 	REGISTER = iota //0
-	MESSAGE			//1
+	MESSAGE         //1
 	BLOGIN
 	BLOGOUT
 )
 
-type Command struct{
-	Type int
+type Command struct {
+	Type  int
 	Value []byte
 }
 
-type Connection struct{
+type Connection struct {
 	//User who sends
 	Usr *User
 	//websocket-connection
@@ -41,28 +41,28 @@ type Connection struct{
 	send chan *Message
 }
 
-type Message struct{
+type Message struct {
 	Usr *User
 	Msg []byte
 }
 
-type Server struct{
-	history []*Message
-	broadcast chan *Message
-	register chan *Connection
-	unregister chan *Connection
+type Server struct {
+	history               []*Message
+	broadcast             chan *Message
+	register              chan *Connection
+	unregister            chan *Connection
 	registeredConnections map[*Connection]bool
 }
 
-func (s *Server)run(){
+func (s *Server) run() {
 	for {
 		select {
 		case c := <-server.register:
 			server.registeredConnections[c] = true
-			c.send<-&Message{&User{"From server"}, []byte("with love")}
+			c.send <- &Message{&User{"From server"}, []byte("with love")}
 			jsonU, _ := json.Marshal(s.history)
 			//send history to new user 
-			c.send<-&Message{&User{"All user"}, jsonU}
+			c.send <- &Message{&User{"All user"}, jsonU}
 		case c := <-server.unregister:
 			delete(server.registeredConnections, c)
 			close(c.send)
@@ -82,7 +82,7 @@ func (s *Server)run(){
 	}
 }
 
-func (c *Connection)Read(){
+func (c *Connection) Read() {
 	for {
 		var message string
 		err := websocket.Message.Receive(c.Conn, &message)
@@ -96,9 +96,9 @@ func (c *Connection)Read(){
 		var user_name string
 		var found bool
 		errm := json.Unmarshal([]byte(message), &cmd)
-		if(errm != nil){
+		if errm != nil {
 
-		}else{
+		} else {
 			if cmd.Type == REGISTER {
 				//check if user name already is taken.
 				for d := range server.registeredConnections {
@@ -109,40 +109,40 @@ func (c *Connection)Read(){
 				if found {
 					break
 				} else {
-					c.Usr = &User{Name:string(cmd.Value)}
+					c.Usr = &User{Name: string(cmd.Value)}
 				}
 			}
 
 			if cmd.Type == MESSAGE {
 				//check if the message is a private message. 
-				r,_ := regexp.MatchString("@", string(cmd.Value))
+				r, _ := regexp.MatchString("@", string(cmd.Value))
 				if r {
 					found = false
 					user_name = strings.Split(string(cmd.Value), " ")[0]
 					user_name = strings.Split(user_name, "@")[1]
 					for d := range server.registeredConnections {
 						if d.Usr.Name == user_name {
-							d.send <-&Message{c.Usr, cmd.Value}
+							d.send <- &Message{c.Usr, cmd.Value}
 							found = true
 						}
 					}
-					if(found) {
-						c.send <-&Message{c.Usr, cmd.Value}
+					if found {
+						c.send <- &Message{c.Usr, cmd.Value}
 					} else {
-						c.send <-&Message{&User{"From server"},[]byte("user not found")}
+						c.send <- &Message{&User{"From server"}, []byte("user not found")}
 					}
-				//else send the message to everyone 
+					//else send the message to everyone 
 				} else {
-					server.broadcast<-&Message{c.Usr, cmd.Value}
+					server.broadcast <- &Message{c.Usr, cmd.Value}
 				}
 			}
 
 			if cmd.Type == BLOGIN {
-				server.broadcast<-&Message{c.Usr, []byte("Logged In")}
+				server.broadcast <- &Message{c.Usr, []byte("Logged In")}
 			}
 
 			if cmd.Type == BLOGOUT {
-				server.broadcast<-&Message{c.Usr, []byte("Logged Out")}
+				server.broadcast <- &Message{c.Usr, []byte("Logged Out")}
 				break
 			}
 
@@ -152,7 +152,7 @@ func (c *Connection)Read(){
 	c.Conn.Close()
 }
 
-func (c *Connection)Write(){
+func (c *Connection) Write() {
 	for message := range c.send {
 		jsonM, _ := json.Marshal(message)
 		fmt.Println(string(jsonM))
@@ -164,17 +164,17 @@ func (c *Connection)Write(){
 }
 
 var server = Server{
-	history: make([]*Message, 0),
-	broadcast: make(chan *Message),
-	register: make(chan *Connection),
-	unregister: make(chan *Connection),
+	history:               make([]*Message, 0),
+	broadcast:             make(chan *Message),
+	register:              make(chan *Connection),
+	unregister:            make(chan *Connection),
 	registeredConnections: make(map[*Connection]bool),
 }
 
 func wsHandler(ws *websocket.Conn) {
-	c := &Connection{Usr: nil,send: make(chan *Message), Conn: ws}
+	c := &Connection{Usr: nil, send: make(chan *Message), Conn: ws}
 	server.register <- c
-	defer func() {server.unregister <- c}()
+	defer func() { server.unregister <- c }()
 	go c.Write()
 	c.Read()
 }
@@ -184,80 +184,81 @@ func wsHandler(ws *websocket.Conn) {
 const staticDir = "template/"
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	path := staticDir+r.URL.Path[1:]
-	
+	path := staticDir + r.URL.Path[1:]
+
 	data, err := openFile(path)
-	if(err == nil){
+	if err == nil {
 		fmt.Println(path[len(path)-3:])
-		if(path[len(path)-3:] == "css"){
-			
+		if path[len(path)-3:] == "css" {
+
 			w.Header().Set("Content-Type", STYLECSS)
 		}
-		
-		if(path[len(path)-2:] == "js"){
-			
+
+		if path[len(path)-2:] == "js" {
+
 			w.Header().Set("Content-Type", JAVASCRIPT)
 		}
-		
+
 		w.Write(data)
-	}else{
+	} else {
 		//using standard notfound impl.
 		http.NotFound(w, r)
 	}
 }
 
-const(
-	TEXTPLAIN string = "text/plain"
-	STYLECSS string = "text/css"
+const (
+	TEXTPLAIN  string = "text/plain"
+	STYLECSS   string = "text/css"
 	JAVASCRIPT string = "application/x-javascript"
 )
 
-func openFile(path string)([]byte, error){
-	data ,err := ioutil.ReadFile(path)
+func openFile(path string) ([]byte, error) {
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return data , nil
+	return data, nil
 }
 
-func chatHandler(w http.ResponseWriter, r *http.Request){
+func chatHandler(w http.ResponseWriter, r *http.Request) {
 	indexTemplate, _ := template.ParseFiles("template/chat.html")
 	indexTemplate.Execute(w, r.Host)
 }
 
-func doLogin(w http.ResponseWriter, r *http.Request){
+func doLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/chat.html", http.StatusFound)
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request){
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 	html, err := ioutil.ReadFile("template/index.html")
-	if err != nil{
+	if err != nil {
 		w.Write([]byte(err.Error()))
 		return
 	}
 
 	w.Write(html)
 }
+
 //writes the file
-func uploadHandler(w http.ResponseWriter, r *http.Request){
-	file, handler, err := r.FormFile("File") 
-	
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	file, handler, err := r.FormFile("File")
+
 	if err != nil {
 		fmt.Println(err)
 	}
-	
-    data, err := ioutil.ReadAll(file) 
-    if err != nil { 
-           fmt.Println(err) 
-    }
-	 
-    err = ioutil.WriteFile(handler.Filename, data, 0777) 
-    if err != nil { 
-           fmt.Println(err) 
-    } 
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = ioutil.WriteFile(handler.Filename, data, 0777)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
-func main(){
+func main() {
 	go server.run()
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", mainHandler)
@@ -266,7 +267,7 @@ func main(){
 	http.HandleFunc("/doLogin", doLogin)
 	http.Handle("/ws", websocket.Handler(wsHandler))
 	err := http.ListenAndServe(addr, nil)
-	    if err != nil {
-	        panic("ListenAndServe: " + err.Error())
-	    }
+	if err != nil {
+		panic("ListenAndServe: " + err.Error())
+	}
 }
