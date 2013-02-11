@@ -204,6 +204,11 @@ func wsHandler(ws *websocket.Conn) {
 const staticDir = "template/"
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		http.Redirect(w, r, "/index.html", http.StatusFound)
+		return
+	}
+	fmt.Println(r.URL.Path)
 	path := staticDir + r.URL.Path[1:]
 
 	data, err := openFile(path)
@@ -280,7 +285,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	go server.run()
-	
+
 	//cleanup if command+c
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -289,7 +294,7 @@ func main() {
 	    server.cleanUp()
 		os.Exit(0)
 	}()
-	
+
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/index.html", loginHandler)
