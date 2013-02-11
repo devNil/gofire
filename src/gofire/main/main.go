@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+	"os"
+	"os/signal"
 	//"strconv"
 )
 
@@ -54,7 +56,25 @@ type Server struct {
 	registeredConnections map[*Connection]bool
 }
 
+const tempDir = "temp/"
+
+func(s *Server) initDir(){
+	err := os.Mkdir(tempDir, 0777)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func(s *Server) cleanUp(){
+	err := os.RemoveAll(tempDir)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 func (s *Server) run() {
+	s.initDir()
+	
 	for {
 		select {
 		case c := <-server.register:
@@ -252,7 +272,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(handler.Filename, data, 0777)
+	err = ioutil.WriteFile(tempDir+handler.Filename, data, 0777)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -260,6 +280,16 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	go server.run()
+	
+	//cleanup if command+c
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func(){
+		<-c
+	    server.cleanUp()
+		os.Exit(0)
+	}()
+	
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/index.html", loginHandler)
