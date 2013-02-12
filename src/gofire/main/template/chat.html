@@ -46,7 +46,7 @@
 				name = obj.Usr.Name
 			}
 			
-			if(name === "All user"){
+			if(name === "history"){
 				var messageArray = JSON.parse(window.atob(obj.Msg))
 				
 				for(i = 0; i< messageArray.length; i++){
@@ -80,7 +80,6 @@
 				event.preventDefault()
 				//reset the input box
 				$("#msg").val("")
-				console.log($("#messages").prop("scrollHeight"));
 			}
 		})
 		
