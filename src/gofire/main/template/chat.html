@@ -20,6 +20,7 @@
 		
 		websocket.onclose = function(evt){
 			$("#messages").append($("<div>").text("Closed"))
+			$("#messages").scrollTop($("#messages").prop("scrollHeight"));
 		}
 		
 		websocket.onopen = function(evt){
@@ -114,6 +115,7 @@
 		}
 		#messages{
 			overflow: auto;
+			height:300px;
 			max-height: 300px;
 			width:640px;
 			background-color:#EEEEEE;

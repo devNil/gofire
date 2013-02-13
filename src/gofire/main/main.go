@@ -40,6 +40,8 @@ type Connection struct {
 	Conn *websocket.Conn
 	// Buffered channel of outbound messages.
 	send chan *Message
+	// chatroom in which the user is
+	chatRoom *ChatRoom
 }
 
 type Message struct {
@@ -48,9 +50,17 @@ type Message struct {
 }
 
 //global vars 
-var server = Server{
+//default chatroom
+var chatRoom = ChatRoom{
+	name:                  "unity is gay",
 	history:               make([]*Message, 0),
 	broadcast:             make(chan *Message),
+	register:              make(chan *Connection),
+	unregister:            make(chan *Connection),
+	registeredConnections: make(map[*Connection]bool),
+}
+var server = Server{
+	chatRooms:             make([]*ChatRoom, 0),
 	register:              make(chan *Connection),
 	unregister:            make(chan *Connection),
 	registeredConnections: make(map[*Connection]bool),
@@ -107,16 +117,16 @@ func (c *Connection) Read() {
 					}
 					//else send the message to everyone 
 				} else {
-					server.broadcast <- &Message{c.Usr, cmd.Value}
+					c.chatRoom.broadcast <- &Message{c.Usr, cmd.Value}
 				}
 			}
 
 			if cmd.Type == BLOGIN {
-				server.broadcast <- &Message{c.Usr, []byte("Logged In")}
+				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged In")}
 			}
 
 			if cmd.Type == BLOGOUT {
-				server.broadcast <- &Message{c.Usr, []byte("Logged Out")}
+				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged Out")}
 				break
 			}
 
@@ -138,6 +148,7 @@ func (c *Connection) Write() {
 }
 
 func main() {
+	
 	go server.run()
 
 	//cleanup if command+c

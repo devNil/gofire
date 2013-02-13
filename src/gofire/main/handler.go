@@ -19,9 +19,8 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/index.html", http.StatusFound)
 		return
 	}
-	fmt.Println(r.URL.Path)
+	
 	path := STATICDIR + r.URL.Path[1:]
-
 	data, err := openFile(path)
 	if err == nil {
 		fmt.Println(path[len(path)-3:])
@@ -89,7 +88,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsHandler(ws *websocket.Conn) {
-	c := &Connection{Usr: nil, send: make(chan *Message), Conn: ws}
+	c := &Connection{Usr: nil, send: make(chan *Message), Conn: ws, chatRoom: server.chatRooms[0]}
 	server.register <- c
 	defer func() { server.unregister <- c }()
 	go c.Write()
