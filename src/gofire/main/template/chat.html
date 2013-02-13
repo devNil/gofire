@@ -57,7 +57,7 @@
 			}else{
 				$("#messages").append($("<div/>").text(name+" | "+window.atob(obj.Msg)));
 			}
-			
+			$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
 		}
 		
 	}
@@ -74,23 +74,29 @@
 		$("#msg").keyup(function(event){
 			if(event.which === 13){
 				var msg = $("#msg").val();
-				command.Type = MESSAGE
-				command.Value = window.btoa(msg)
-				websocket.send(JSON.stringify(command))
-				event.preventDefault()
-				//reset the input box
-				$("#msg").val("")
+				if(msg != ""){
+					command.Type = MESSAGE
+					command.Value = window.btoa(msg)
+					websocket.send(JSON.stringify(command))
+					event.preventDefault()
+					//reset the input box
+					$("#msg").val("")
+					$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
+				}
 			}
 		})
 		
 		$("#send").click(function(){
 			var msg = $("#msg").val();
-			command.Type = MESSAGE
-			command.Value = window.btoa(msg)
-			websocket.send(JSON.stringify(command))
-			event.preventDefault()
-			//reset the input box and reset the focus.
-			$("#msg").val("")
+			if(msg != ""){
+				command.Type = MESSAGE
+				command.Value = window.btoa(msg)
+				websocket.send(JSON.stringify(command))
+				event.preventDefault()
+				//reset the input box and reset the focus.
+				$("#msg").val("")
+				$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
+			}
 			$("#msg").focus();
 		})
 
