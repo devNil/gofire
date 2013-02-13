@@ -57,7 +57,7 @@
 			}else{
 				$("#messages").append($("<div/>").text(name+" | "+window.atob(obj.Msg)));
 			}
-			$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
+			$("#messages").scrollTop($("#messages").prop("scrollHeight"));
 		}
 		
 	}
@@ -81,7 +81,7 @@
 					event.preventDefault()
 					//reset the input box
 					$("#msg").val("")
-					$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
+					$("#messages").scrollTop($("#messages").prop("scrollHeight"));
 				}
 			}
 		})
@@ -95,7 +95,7 @@
 				event.preventDefault()
 				//reset the input box and reset the focus.
 				$("#msg").val("")
-				$("#messages").animate({"scrollTop": $("#messages").prop("scrollHeight")});
+				$("#messages").scrollTop($("#messages").prop("scrollHeight"));
 			}
 			$("#msg").focus();
 		})
@@ -116,7 +116,6 @@
 			overflow: auto;
 			max-height: 300px;
 			width:640px;
-			height:480px;
 			background-color:#EEEEEE;
 		}
 	</style>
