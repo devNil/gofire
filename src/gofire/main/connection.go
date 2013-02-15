@@ -112,9 +112,10 @@ func (c *Connection) Read() {
 func (c *Connection) Write() {
 	for command := range c.send {
 		//marshal in 
+		
 		jsonC, _ := json.Marshal(command)
 		
-		err := websocket.Message.Send(c.Conn, jsonC)
+		err := websocket.Message.Send(c.Conn, string(jsonC))
 		if err != nil {
 			break
 		}
