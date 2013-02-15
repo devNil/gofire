@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>gochat-Test</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<script src="js/core.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/command.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" charset="utf-8">
 
 	var conn = "ws://{{$}}/ws"
@@ -12,12 +12,6 @@
 	var websocket;
 	
 	const command = {"Type":0,"Value":window.btoa("")}
-	
-	const REGISTER = 0
-	const MESSAGE = 1
-	const BLOGIN = 2
-	const BLOGOUT = 3
-	const BMESSAGE = 4
 	
 	function appendNormalMessage(user, message){
 		$("#messages").append($("<div/>").text(user+" | "+message));
