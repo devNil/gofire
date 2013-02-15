@@ -168,3 +168,5 @@ pip-log.txt
 src/code.google.com/*
 *.css
 
+
+*.a
