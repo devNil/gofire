@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"encoding/json"
 	"fmt"
+	"gofire/command"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,21 +17,8 @@ const ADDR = ":8080"
 const TEMPDIR = "temp/"
 const STATICDIR = "template/"
 
-const (
-	REGISTER = iota //0
-	MESSAGE         //1
-	BLOGIN
-	BLOGOUT
-)
-
-//structs 
 type User struct {
 	Name string
-}
-
-type Command struct {
-	Type  int
-	Value []byte
 }
 
 type Connection struct {
@@ -76,14 +64,14 @@ func (c *Connection) Read() {
 
 		fmt.Println(message)
 
-		var cmd *Command
+		var cmd *command.Command
 		var userName string
 		var found bool
 		errm := json.Unmarshal([]byte(message), &cmd)
 		if errm != nil {
 
 		} else {
-			if cmd.Type == REGISTER {
+			if cmd.Type == command.REGISTER {
 				//check if user name already is taken.
 				for d := range server.registeredConnections {
 					if d.Usr != nil && d.Usr.Name == string(cmd.Value) {
@@ -97,7 +85,7 @@ func (c *Connection) Read() {
 				}
 			}
 
-			if cmd.Type == MESSAGE {
+			if cmd.Type == command.MESSAGE {
 				//check if the message is a private message. 
 				r, _ := regexp.MatchString("@", string(cmd.Value))
 				if r {
@@ -121,11 +109,11 @@ func (c *Connection) Read() {
 				}
 			}
 
-			if cmd.Type == BLOGIN {
+			if cmd.Type == command.BLOGIN {
 				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged In")}
 			}
 
-			if cmd.Type == BLOGOUT {
+			if cmd.Type == command.BLOGOUT {
 				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged Out")}
 				break
 			}
@@ -148,7 +136,7 @@ func (c *Connection) Write() {
 }
 
 func main() {
-	
+
 	go server.run()
 
 	//cleanup if command+c
