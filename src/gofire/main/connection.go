@@ -42,8 +42,8 @@ func (c *Connection) Read() {
 		
 		err = json.Unmarshal([]byte(rawIncome), &cmd)
 		
+		
 		if err == nil {
-			
 			//REGISTER -> {REGISTER, USERNAME}
 			if cmd.Type == command.REGISTER {
 				//check if user name already is taken.
@@ -56,6 +56,15 @@ func (c *Connection) Read() {
 					break
 				} else {
 					c.Usr = &User{Name: string(cmd.Value)}
+				}
+			}
+			
+			if cmd.Type == command.BMESSAGE {
+				m, errm := json.Marshal(Message{c.Usr, cmd.Value})
+				if errm == nil{
+					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+				}else{
+					fmt.Println(errm)
 				}
 			}
 
