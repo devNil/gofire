@@ -19,7 +19,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/index.html", http.StatusFound)
 		return
 	}
-	
+
 	path := STATICDIR + r.URL.Path[1:]
 	data, err := openFile(path)
 	if err == nil {
