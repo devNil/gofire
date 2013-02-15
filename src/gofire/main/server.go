@@ -10,7 +10,7 @@ type Server struct {
 	chatRooms             []*ChatRoom
 	register              chan *Connection
 	unregister            chan *Connection
-	registeredConnections map[*Connection]bool	
+	registeredConnections map[*Connection]bool
 }
 
 type ChatRoom struct {
@@ -19,7 +19,7 @@ type ChatRoom struct {
 	broadcast             chan *Message
 	register              chan *Connection
 	unregister            chan *Connection
-	registeredConnections map[*Connection]bool	
+	registeredConnections map[*Connection]bool
 }
 
 func (s *Server) initDir() {
@@ -38,8 +38,8 @@ func (s *Server) cleanUp() {
 
 func (s *Server) run() {
 	s.initDir()
-	s.chatRooms = append(s.chatRooms, &chatRoom) 
-	for _,cr := range s.chatRooms {
+	s.chatRooms = append(s.chatRooms, &chatRoom)
+	for _, cr := range s.chatRooms {
 		go cr.run()
 	}
 	for {
@@ -58,28 +58,28 @@ func (s *Server) run() {
 func (cr *ChatRoom) run() {
 	for {
 		select {
-			case c := <-cr.register:
-				cr.registeredConnections[c] = true
-				c.send <- &Message{&User{cr.name}, []byte("go!")}
-				jsonU, _ := json.Marshal(cr.history)
-				//send history to new user 
-				c.send <- &Message{&User{"history"}, jsonU}
-			case c := <-cr.unregister:
-				delete(cr.registeredConnections, c)
-			
-			case m:= <-cr.broadcast:
-				//append to history
-				cr.history = append(cr.history, m)
-				for c := range cr.registeredConnections {
-					select {
-						case c.send <- m:
-							
-						default:
-							delete(cr.registeredConnections, c)
-							server.unregister <- c
-							go c.Conn.Close()
-					}
-				}	
+		case c := <-cr.register:
+			cr.registeredConnections[c] = true
+			c.send <- &Message{&User{cr.name}, []byte("go!")}
+			jsonU, _ := json.Marshal(cr.history)
+			//send history to new user 
+			c.send <- &Message{&User{"history"}, jsonU}
+		case c := <-cr.unregister:
+			delete(cr.registeredConnections, c)
+
+		case m := <-cr.broadcast:
+			//append to history
+			cr.history = append(cr.history, m)
+			for c := range cr.registeredConnections {
+				select {
+				case c.send <- m:
+
+				default:
+					delete(cr.registeredConnections, c)
+					server.unregister <- c
+					go c.Conn.Close()
+				}
+			}
 		}
 	}
 }
@@ -91,5 +91,5 @@ func (s *Server) creatChatRoom(name string) {
 		register:              make(chan *Connection),
 		unregister:            make(chan *Connection),
 		registeredConnections: make(map[*Connection]bool),
-	})	
+	})
 }
