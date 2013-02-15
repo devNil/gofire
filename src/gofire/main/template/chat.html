@@ -11,7 +11,8 @@
 	
 	var websocket;
 	
-	const command = {"Type":0,"Value":""}
+	const command = {"Type":0,"Value":window.btoa("")}
+	
 	const REGISTER = 0
 	const MESSAGE = 1
 	const BLOGIN = 2
@@ -21,6 +22,20 @@
 	function appendNormalMessage(user, message){
 		$("#messages").append($("<div/>").text(user+" | "+message));
 		$("#messages").scrollTop($("#messages").prop("scrollHeight"));
+	}
+	
+	function submitMessage(){
+		var msg = $("#msg").val();
+		if(msg != ""){
+			command.Type = BMESSAGE
+			command.Value = window.btoa(msg)
+			websocket.send(JSON.stringify(command))
+			event.preventDefault()
+			//reset the input box and reset the focus.
+			$("#msg").val("")
+			$("#messages").scrollTop($("#messages").prop("scrollHeight"));
+		}
+		$("#msg").focus();
 	}
 	
 	
@@ -41,11 +56,7 @@
 			command.Type = BLOGIN
 			command.Value = window.btoa("")
 			this.send(JSON.stringify(command))
-			
-
-
 		}
-		
 			
 		websocket.onmessage = function(evt){
 			var command = JSON.parse(evt.data);
@@ -60,9 +71,11 @@
 		
 	}
 	
+	
 	var username;
 	
 	$(function(){
+		
 		username = sessionStorage["usr"];
 		
 		$($("h1")[0]).text(conn);
@@ -71,31 +84,12 @@
 		
 		$("#msg").keyup(function(event){
 			if(event.which === 13){
-				var msg = $("#msg").val();
-				if(msg != ""){
-					command.Type = MESSAGE
-					command.Value = window.btoa(msg)
-					websocket.send(JSON.stringify(command))
-					event.preventDefault()
-					//reset the input box
-					$("#msg").val("")
-					$("#messages").scrollTop($("#messages").prop("scrollHeight"));
-				}
+				submitMessage();
 			}
 		})
 		
 		$("#send").click(function(){
-			var msg = $("#msg").val();
-			if(msg != ""){
-				command.Type = BMESSAGE
-				command.Value = window.btoa(msg)
-				websocket.send(JSON.stringify(command))
-				event.preventDefault()
-				//reset the input box and reset the focus.
-				$("#msg").val("")
-				$("#messages").scrollTop($("#messages").prop("scrollHeight"));
-			}
-			$("#msg").focus();
+			submitMessage();
 		})
 
 		$("#logout").click(function(){
