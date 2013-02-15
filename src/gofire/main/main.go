@@ -20,7 +20,7 @@ type Message struct {
 //global vars 
 //default chatroom
 var chatRoom = ChatRoom{
-	name:                  "unity is gay",
+	name:                  "unity is gay", //this is not meant to be offensive
 	history:               make([]*Message, 0),
 	broadcast:             make(chan *Message),
 	register:              make(chan *Connection),
