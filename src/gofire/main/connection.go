@@ -26,7 +26,7 @@ type Connection struct {
 
 func (c *Connection) Read() {
 	for {
-		//var message string
+		//raw incoming command
 		var rawIncome []byte
 
 		err := websocket.Message.Receive(c.Conn, &rawIncome)
