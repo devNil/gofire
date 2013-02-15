@@ -24,21 +24,21 @@ type Connection struct {
 	chatRoom *ChatRoom
 }
 
-
 func (c *Connection) Read() {
 	for {
-		var message string
-		err := websocket.Message.Receive(c.Conn, &message)
+		//var message string
+		var rawIncome []byte
+
+		err := websocket.Message.Receive(c.Conn, &rawIncome)
 		if err != nil {
+			fmt.Println(err)
 			break
 		}
-
-		fmt.Println(message)
 
 		var cmd *command.Command
 		var userName string
 		var found bool
-		errm := json.Unmarshal([]byte(message), &cmd)
+		errm := json.Unmarshal([]byte(rawIncome), &cmd)
 		if errm != nil {
 
 		} else {
