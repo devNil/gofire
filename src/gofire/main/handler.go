@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"text/template"
+	"gofire/command"
 )
 
 const (
@@ -88,7 +89,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsHandler(ws *websocket.Conn) {
-	c := &Connection{Usr: nil, send: make(chan *Message), Conn: ws, chatRoom: server.chatRooms[0]}
+	c := &Connection{Usr: nil, send: make(chan *command.Command), Conn: ws, chatRoom: server.chatRooms[0]}
 	server.register <- c
 	defer func() { server.unregister <- c }()
 	go c.Write()

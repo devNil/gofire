@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"gofire/command"
 )
 
 type Server struct {
@@ -16,7 +17,7 @@ type Server struct {
 type ChatRoom struct {
 	name                  string
 	history               []*Message
-	broadcast             chan *Message
+	broadcast             chan *command.Command
 	register              chan *Connection
 	unregister            chan *Connection
 	registeredConnections map[*Connection]bool
@@ -47,7 +48,14 @@ func (s *Server) run() {
 		case c := <-s.register:
 			s.registeredConnections[c] = true
 			s.chatRooms[0].register <- c
-			c.send <- &Message{&User{"From server"}, []byte("with love")}
+			jsonM, err :=  json.Marshal(Message{&User{"From server"},[]byte("with love")})
+			
+			if err == nil{
+				c.send <- &command.Command{command.BMESSAGE, jsonM}
+			}else{
+				fmt.Println(err)
+			}
+			
 		case c := <-s.unregister:
 			s.chatRooms[0].unregister <- c
 			delete(s.registeredConnections, c)
@@ -55,15 +63,34 @@ func (s *Server) run() {
 		}
 	}
 }
+
+//TODO do better
+func prepareMessage(t command.CommandType ,u *User, message []byte) (*command.Command,error){
+	jsonM, err := json.Marshal(Message{u, message})
+	if err != nil{
+		return nil, err
+	}
+	
+	return &command.Command{t, jsonM}, nil
+}
+
 func (cr *ChatRoom) run() {
 	for {
 		select {
 		case c := <-cr.register:
 			cr.registeredConnections[c] = true
-			c.send <- &Message{&User{cr.name}, []byte("go!")}
-			jsonU, _ := json.Marshal(cr.history)
+			
+			cmd, err := prepareMessage(command.BMESSAGE, &User{cr.name}, []byte("go!"))
+			
+			if err == nil{
+				c.send <- cmd
+			}else{
+				fmt.Println(err)
+			}
+			
+			//jsonU, _ := json.Marshal(cr.history)
 			//send history to new user 
-			c.send <- &Message{&User{"history"}, jsonU}
+			//c.send <- &Message{&User{"history"}, jsonU}
 		case c := <-cr.unregister:
 			delete(cr.registeredConnections, c)
 
@@ -87,7 +114,7 @@ func (s *Server) creatChatRoom(name string) {
 	s.chatRooms = append(s.chatRooms, &ChatRoom{
 		name:                  name,
 		history:               make([]*Message, 0),
-		broadcast:             make(chan *Message),
+		broadcast:             make(chan *command.Command),
 		register:              make(chan *Connection),
 		unregister:            make(chan *Connection),
 		registeredConnections: make(map[*Connection]bool),
