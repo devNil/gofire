@@ -4,8 +4,8 @@ import(
 	"fmt"
 	"gofire/command"
 	"encoding/json"
-	"regexp"
-	"strings"
+	//"regexp"
+	//"strings"
 	"code.google.com/p/go.net/websocket"
 )
 
@@ -19,7 +19,7 @@ type Connection struct {
 	//websocket-connection
 	Conn *websocket.Conn
 	// Buffered channel of outbound messages.
-	send chan *Message
+	send chan *command.Command
 	// chatroom in which the user is
 	chatRoom *ChatRoom
 }
@@ -36,12 +36,15 @@ func (c *Connection) Read() {
 		}
 
 		var cmd *command.Command
-		var userName string
+		
+		//var userName string
 		var found bool
-		errm := json.Unmarshal([]byte(rawIncome), &cmd)
-		if errm != nil {
-
-		} else {
+		
+		err = json.Unmarshal([]byte(rawIncome), &cmd)
+		
+		if err == nil {
+			
+			//REGISTER -> {REGISTER, USERNAME}
 			if cmd.Type == command.REGISTER {
 				//check if user name already is taken.
 				for d := range server.registeredConnections {
@@ -56,7 +59,7 @@ func (c *Connection) Read() {
 				}
 			}
 
-			if cmd.Type == command.MESSAGE {
+			/*if cmd.Type == command.MESSAGE {
 				//check if the message is a private message. 
 				r, _ := regexp.MatchString("@", string(cmd.Value))
 				if r {
@@ -77,29 +80,41 @@ func (c *Connection) Read() {
 					//else send the message to everyone 
 				} else {
 					c.chatRoom.broadcast <- &Message{c.Usr, cmd.Value}
-				}
+				}*/
 			}
 
 			if cmd.Type == command.BLOGIN {
-				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged In")}
+				m, errm := json.Marshal(Message{c.Usr, []byte("Logged In")})
+				if errm == nil{
+					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+				}else{
+					fmt.Println(errm)
+				}
+				
 			}
 
 			if cmd.Type == command.BLOGOUT {
-				c.chatRoom.broadcast <- &Message{c.Usr, []byte("Logged Out")}
-				break
+				m, errm := json.Marshal(Message{c.Usr, []byte("Logged out")})
+				if errm == nil{
+					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+				}else{
+					fmt.Println(errm)
+				}
+				
 			}
-
 		}
 
-	}
+	
+	
 	c.Conn.Close()
 }
 
 func (c *Connection) Write() {
-	for message := range c.send {
-		jsonM, _ := json.Marshal(message)
-		fmt.Println(string(jsonM))
-		err := websocket.Message.Send(c.Conn, string(jsonM))
+	for command := range c.send {
+		//marshal in 
+		jsonC, _ := json.Marshal(command)
+		
+		err := websocket.Message.Send(c.Conn, jsonC)
 		if err != nil {
 			break
 		}
