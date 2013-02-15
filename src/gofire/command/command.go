@@ -8,6 +8,7 @@ const (
 	MESSAGE                     //Message in Value
 	BLOGIN
 	BLOGOUT
+	BMESSAGE //Broadcast-Message
 )
 
 //Every Command has a type and a value for sending arbitrary data.
