@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"gofire/command"
 )
 
 //constants 
@@ -22,7 +23,7 @@ type Message struct {
 var chatRoom = ChatRoom{
 	name:                  "unity is gay", //this is not meant to be offensive
 	history:               make([]*Message, 0),
-	broadcast:             make(chan *Message),
+	broadcast:             make(chan *command.Command),
 	register:              make(chan *Connection),
 	unregister:            make(chan *Connection),
 	registeredConnections: make(map[*Connection]bool),

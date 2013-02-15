@@ -67,12 +67,12 @@ func (cr *ChatRoom) run() {
 		case c := <-cr.unregister:
 			delete(cr.registeredConnections, c)
 
-		case m := <-cr.broadcast:
+		case cmd := <-cr.broadcast:
 			//append to history
-			cr.history = append(cr.history, m)
+			//cr.history = append(cr.history, m)
 			for c := range cr.registeredConnections {
 				select {
-				case c.send <- m:
+				case c.send <- cmd:
 
 				default:
 					delete(cr.registeredConnections, c)
