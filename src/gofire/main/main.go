@@ -2,11 +2,11 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"gofire/command"
+	"gofire/message"
 	"net/http"
 	"os"
 	"os/signal"
-	"gofire/command"
-	"gofire/message"
 )
 
 //constants 

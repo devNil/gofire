@@ -1,11 +1,11 @@
 package main
 
-import(
+import (
+	"encoding/json"
 	"fmt"
 	"gofire/command"
-	"gofire/user"
 	"gofire/message"
-	"encoding/json"
+	"gofire/user"
 	//"regexp"
 	//"strings"
 	"code.google.com/p/go.net/websocket"
@@ -34,13 +34,12 @@ func (c *Connection) Read() {
 		}
 
 		var cmd *command.Command
-		
+
 		//var userName string
 		var found bool
-		
+
 		err = json.Unmarshal([]byte(rawIncome), &cmd)
-		
-		
+
 		if err == nil {
 			//REGISTER -> {REGISTER, USERNAME}
 			if cmd.Type == command.REGISTER {
@@ -56,72 +55,70 @@ func (c *Connection) Read() {
 					c.Usr = &user.User{Name: string(cmd.Value)}
 				}
 			}
-			
+
 			if cmd.Type == command.BMESSAGE {
 				m, errm := json.Marshal(message.Message{c.Usr, cmd.Value})
-				if errm == nil{
+				if errm == nil {
 					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
-				}else{
+				} else {
 					fmt.Println(errm)
 				}
 			}
 
 			/*if cmd.Type == command.MESSAGE {
-				//check if the message is a private message. 
-				r, _ := regexp.MatchString("@", string(cmd.Value))
-				if r {
-					found = false
-					userName = strings.Split(string(cmd.Value), " ")[0]
-					userName = strings.Split(userName, "@")[1]
-					for d := range server.registeredConnections {
-						if d.Usr.Name == userName {
-							d.send <- &Message{c.Usr, cmd.Value}
-							found = true
-						}
+			//check if the message is a private message. 
+			r, _ := regexp.MatchString("@", string(cmd.Value))
+			if r {
+				found = false
+				userName = strings.Split(string(cmd.Value), " ")[0]
+				userName = strings.Split(userName, "@")[1]
+				for d := range server.registeredConnections {
+					if d.Usr.Name == userName {
+						d.send <- &Message{c.Usr, cmd.Value}
+						found = true
 					}
-					if found {
-						c.send <- &Message{c.Usr, cmd.Value}
-					} else {
-						c.send <- &Message{&User{"From server"}, []byte("user not found")}
-					}
-					//else send the message to everyone 
+				}
+				if found {
+					c.send <- &Message{c.Usr, cmd.Value}
 				} else {
-					c.chatRoom.broadcast <- &Message{c.Usr, cmd.Value}
-				}*/
-			}
-
-			if cmd.Type == command.BLOGIN {
-				m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged In")})
-				if errm == nil{
-					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
-				}else{
-					fmt.Println(errm)
+					c.send <- &Message{&User{"From server"}, []byte("user not found")}
 				}
-				
-			}
-
-			if cmd.Type == command.BLOGOUT {
-				m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged out")})
-				if errm == nil{
-					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
-				}else{
-					fmt.Println(errm)
-				}
-				
-			}
+				//else send the message to everyone 
+			} else {
+				c.chatRoom.broadcast <- &Message{c.Usr, cmd.Value}
+			}*/
 		}
 
-	
-	
+		if cmd.Type == command.BLOGIN {
+			m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged In")})
+			if errm == nil {
+				c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+			} else {
+				fmt.Println(errm)
+			}
+
+		}
+
+		if cmd.Type == command.BLOGOUT {
+			m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged out")})
+			if errm == nil {
+				c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+			} else {
+				fmt.Println(errm)
+			}
+
+		}
+	}
+
 	c.Conn.Close()
 }
 
 func (c *Connection) Write() {
 	for command := range c.send {
 		//marshal in 
-		
+
 		jsonC, _ := json.Marshal(command)
-		
+
 		err := websocket.Message.Send(c.Conn, string(jsonC))
 		if err != nil {
 			break

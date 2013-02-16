@@ -3,10 +3,10 @@ package main
 import (
 	"code.google.com/p/go.net/websocket"
 	"fmt"
+	"gofire/command"
 	"io/ioutil"
 	"net/http"
 	"text/template"
-	"gofire/command"
 )
 
 const (

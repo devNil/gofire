@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"gofire/command"
 	"gofire/message"
 	"gofire/user"
+	"os"
 )
 
 type Server struct {
@@ -49,14 +49,14 @@ func (s *Server) run() {
 		case c := <-s.register:
 			s.registeredConnections[c] = true
 			s.chatRooms[0].register <- c
-			command, err :=  command.PrepareMessage(command.BMESSAGE, &user.User{"From server"},[]byte("with love"))
-			
-			if err == nil{
+			command, err := command.PrepareMessage(command.BMESSAGE, &user.User{"From server"}, []byte("with love"))
+
+			if err == nil {
 				c.send <- command
-			}else{
+			} else {
 				fmt.Println(err)
 			}
-			
+
 		case c := <-s.unregister:
 			s.chatRooms[0].unregister <- c
 			delete(s.registeredConnections, c)
@@ -70,15 +70,15 @@ func (cr *ChatRoom) run() {
 		select {
 		case c := <-cr.register:
 			cr.registeredConnections[c] = true
-			
+
 			cmd, err := command.PrepareMessage(command.BMESSAGE, &user.User{cr.name}, []byte("go!"))
-			
-			if err == nil{
+
+			if err == nil {
 				c.send <- cmd
-			}else{
+			} else {
 				fmt.Println(err)
 			}
-			
+
 			//jsonU, _ := json.Marshal(cr.history)
 			//send history to new user 
 			//c.send <- &Message{&User{"history"}, jsonU}

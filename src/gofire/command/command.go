@@ -2,9 +2,9 @@
 package command
 
 import (
+	"encoding/json"
 	"gofire/message"
 	"gofire/user"
-	"encoding/json"
 )
 
 type CommandType int
@@ -29,11 +29,11 @@ type Command struct {
 //This Function prepares wraps a message in an command.
 //This is a shortcut.
 //If something went wrong, nil and a error are returned.
-func PrepareMessage(tp CommandType ,usr *user.User, msg []byte) (*Command,error){
-	mMessage, err := json.Marshal(message.Message{User:usr,Msg:msg})
-	if err != nil{
+func PrepareMessage(tp CommandType, usr *user.User, msg []byte) (*Command, error) {
+	mMessage, err := json.Marshal(message.Message{User: usr, Msg: msg})
+	if err != nil {
 		return nil, err
 	}
-	
+
 	return &Command{tp, mMessage}, nil
 }
