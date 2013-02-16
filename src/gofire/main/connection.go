@@ -3,19 +3,17 @@ package main
 import(
 	"fmt"
 	"gofire/command"
+	"gofire/user"
+	"gofire/message"
 	"encoding/json"
 	//"regexp"
 	//"strings"
 	"code.google.com/p/go.net/websocket"
 )
 
-type User struct {
-	Name string
-}
-
 type Connection struct {
 	//User who sends
-	Usr *User
+	Usr *user.User
 	//websocket-connection
 	Conn *websocket.Conn
 	// Buffered channel of outbound messages.
@@ -55,12 +53,12 @@ func (c *Connection) Read() {
 				if found {
 					break
 				} else {
-					c.Usr = &User{Name: string(cmd.Value)}
+					c.Usr = &user.User{Name: string(cmd.Value)}
 				}
 			}
 			
 			if cmd.Type == command.BMESSAGE {
-				m, errm := json.Marshal(Message{c.Usr, cmd.Value})
+				m, errm := json.Marshal(message.Message{c.Usr, cmd.Value})
 				if errm == nil{
 					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
 				}else{
@@ -93,7 +91,7 @@ func (c *Connection) Read() {
 			}
 
 			if cmd.Type == command.BLOGIN {
-				m, errm := json.Marshal(Message{c.Usr, []byte("Logged In")})
+				m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged In")})
 				if errm == nil{
 					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
 				}else{
@@ -103,7 +101,7 @@ func (c *Connection) Read() {
 			}
 
 			if cmd.Type == command.BLOGOUT {
-				m, errm := json.Marshal(Message{c.Usr, []byte("Logged out")})
+				m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged out")})
 				if errm == nil{
 					c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
 				}else{

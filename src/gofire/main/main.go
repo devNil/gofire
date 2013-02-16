@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"gofire/command"
+	"gofire/message"
 )
 
 //constants 
@@ -13,16 +14,11 @@ const ADDR = ":8080"
 const TEMPDIR = "temp/"
 const STATICDIR = "template/"
 
-type Message struct {
-	Usr *User
-	Msg []byte
-}
-
 //global vars 
 //default chatroom
 var chatRoom = ChatRoom{
 	name:                  "unity is gay", //this is not meant to be offensive
-	history:               make([]*Message, 0),
+	history:               make([]*message.Message, 0),
 	broadcast:             make(chan *command.Command),
 	register:              make(chan *Connection),
 	unregister:            make(chan *Connection),

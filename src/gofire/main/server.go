@@ -1,10 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"gofire/command"
+	"gofire/message"
+	"gofire/user"
 )
 
 type Server struct {
@@ -16,7 +17,7 @@ type Server struct {
 
 type ChatRoom struct {
 	name                  string
-	history               []*Message
+	history               []*message.Message
 	broadcast             chan *command.Command
 	register              chan *Connection
 	unregister            chan *Connection
@@ -48,10 +49,10 @@ func (s *Server) run() {
 		case c := <-s.register:
 			s.registeredConnections[c] = true
 			s.chatRooms[0].register <- c
-			jsonM, err :=  json.Marshal(Message{&User{"From server"},[]byte("with love")})
+			command, err :=  command.PrepareMessage(command.BMESSAGE, &user.User{"From server"},[]byte("with love"))
 			
 			if err == nil{
-				c.send <- &command.Command{command.BMESSAGE, jsonM}
+				c.send <- command
 			}else{
 				fmt.Println(err)
 			}
@@ -64,23 +65,13 @@ func (s *Server) run() {
 	}
 }
 
-//TODO do better
-func prepareMessage(t command.CommandType ,u *User, message []byte) (*command.Command,error){
-	jsonM, err := json.Marshal(Message{u, message})
-	if err != nil{
-		return nil, err
-	}
-	
-	return &command.Command{t, jsonM}, nil
-}
-
 func (cr *ChatRoom) run() {
 	for {
 		select {
 		case c := <-cr.register:
 			cr.registeredConnections[c] = true
 			
-			cmd, err := prepareMessage(command.BMESSAGE, &User{cr.name}, []byte("go!"))
+			cmd, err := command.PrepareMessage(command.BMESSAGE, &user.User{cr.name}, []byte("go!"))
 			
 			if err == nil{
 				c.send <- cmd
@@ -113,7 +104,7 @@ func (cr *ChatRoom) run() {
 func (s *Server) creatChatRoom(name string) {
 	s.chatRooms = append(s.chatRooms, &ChatRoom{
 		name:                  name,
-		history:               make([]*Message, 0),
+		history:               make([]*message.Message, 0),
 		broadcast:             make(chan *command.Command),
 		register:              make(chan *Connection),
 		unregister:            make(chan *Connection),
