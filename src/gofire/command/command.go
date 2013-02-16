@@ -27,7 +27,7 @@ type Command struct {
 }
 
 //This Function wraps a message in a command.
-//This is a shortcut.
+//This is a shortcut for Wrap.
 //If something went wrong, nil and a error are returned.
 func PrepareMessage(tp CommandType, usr *user.User, msg []byte) (*Command, error) {
 	mMessage, err := json.Marshal(message.Message{User: usr, Msg: msg})
