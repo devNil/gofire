@@ -1,4 +1,4 @@
-//will all message related stuff
+//Package message provides the message structs
 package message
 
 import "gofire/user"

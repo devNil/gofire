@@ -1,4 +1,4 @@
-//Contains all user related stuff
+//Package user provides user related structs and functions
 package user
 
 //Std user
