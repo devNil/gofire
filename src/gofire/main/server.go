@@ -15,15 +15,6 @@ type Server struct {
 	registeredConnections map[*Connection]bool
 }
 
-type ChatRoom struct {
-	name                  string
-	history               []*message.Message
-	broadcast             chan *command.Command
-	register              chan *Connection
-	unregister            chan *Connection
-	registeredConnections map[*Connection]bool
-}
-
 func (s *Server) initDir() {
 	err := os.Mkdir(TEMPDIR, 0777)
 	if err != nil {
@@ -63,6 +54,15 @@ func (s *Server) run() {
 			close(c.send)
 		}
 	}
+}
+
+type ChatRoom struct {
+	name                  string
+	history               []*message.Message
+	broadcast             chan *command.Command
+	register              chan *Connection
+	unregister            chan *Connection
+	registeredConnections map[*Connection]bool
 }
 
 func (cr *ChatRoom) run() {

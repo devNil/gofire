@@ -98,7 +98,7 @@ func (c *Connection) Read() {
 			}
 
 		}
-
+		
 		if cmd.Type == command.BLOGOUT {
 			cmd,err := command.PrepareMessage(command.BMESSAGE, c.Usr, []byte("Logged out"))
 			if err == nil {
