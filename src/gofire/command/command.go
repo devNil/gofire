@@ -38,7 +38,7 @@ func PrepareMessage(tp CommandType, usr *user.User, msg []byte) (*Command, error
 	return &Command{tp, mMessage}, nil
 }
 //This Function wraps everything into a Command.
-//It returns either nil and a error or a command pointer and nil
+//Returns either nil and a error or a command pointer and nil
 func Wrap(tp CommandType, v interface{}) (*Command, error){
 	mStruct, err := json.Marshal(v)
 	if err != nil {
