@@ -30,10 +30,10 @@ type Command struct {
 //This is a shortcut.
 //If something went wrong, nil and a error are returned.
 func PrepareMessage(tp CommandType ,usr *user.User, msg []byte) (*Command,error){
-	jsonM, err := json.Marshal(message.Message{User:usr,Msg:msg})
+	mMessage, err := json.Marshal(message.Message{User:usr,Msg:msg})
 	if err != nil{
 		return nil, err
 	}
 	
-	return &Command{tp, jsonM}, nil
+	return &Command{tp, mMessage}, nil
 }
