@@ -26,7 +26,7 @@ type Command struct {
 	Value []byte
 }
 
-//This Function prepares wraps a message in an command.
+//This Function wraps a message in a command.
 //This is a shortcut.
 //If something went wrong, nil and a error are returned.
 func PrepareMessage(tp CommandType, usr *user.User, msg []byte) (*Command, error) {
