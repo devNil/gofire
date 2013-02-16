@@ -90,21 +90,21 @@ func (c *Connection) Read() {
 		}
 
 		if cmd.Type == command.BLOGIN {
-			m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged In")})
-			if errm == nil {
-				c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+			cmd,err := command.PrepareMessage(command.BMESSAGE, c.Usr, []byte("Logged In"))
+			if err == nil {
+				c.chatRoom.broadcast <- cmd
 			} else {
-				fmt.Println(errm)
+				fmt.Println(err)
 			}
 
 		}
 
 		if cmd.Type == command.BLOGOUT {
-			m, errm := json.Marshal(message.Message{c.Usr, []byte("Logged out")})
-			if errm == nil {
-				c.chatRoom.broadcast <- &command.Command{command.BMESSAGE, m}
+			cmd,err := command.PrepareMessage(command.BMESSAGE, c.Usr, []byte("Logged out"))
+			if err == nil {
+				c.chatRoom.broadcast <- cmd
 			} else {
-				fmt.Println(errm)
+				fmt.Println(err)
 			}
 
 		}
