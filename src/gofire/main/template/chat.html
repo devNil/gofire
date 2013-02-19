@@ -3,7 +3,8 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>gochat-Test</title>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>-->
+	<script src="js/jquery-1.9.0.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/command.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" charset="utf-8">
 
@@ -21,9 +22,10 @@
 	function submitMessage(){
 		var msg = $("#msg").val();
 		if(msg != ""){
-			command.Type = BMESSAGE
+			new Command(BMESSAGE, msg).Send(websocket);
+			/*command.Type = BMESSAGE
 			command.Value = window.btoa(msg)
-			websocket.send(JSON.stringify(command))
+			websocket.send(JSON.stringify(command))*/
 			event.preventDefault()
 			//reset the input box and reset the focus.
 			$("#msg").val("")
@@ -42,14 +44,17 @@
 		}
 		
 		websocket.onopen = function(evt){
-			command.Type = REGISTER
+			/*command.Type = REGISTER
 			command.Value = window.btoa(username)
-			this.send(JSON.stringify(command))
+			this.send(JSON.stringify(command))*/
+			
+			new Command(REGISTER, username).Send(this);
+			new Command(BLOGIN, "").Send(this);
 			
 			
-			command.Type = BLOGIN
+			/*command.Type = BLOGIN
 			command.Value = window.btoa("")
-			this.send(JSON.stringify(command))
+			this.send(JSON.stringify(command))*/
 		}
 			
 		websocket.onmessage = function(evt){
