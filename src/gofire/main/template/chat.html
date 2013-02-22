@@ -58,11 +58,12 @@
 		}
 			
 		websocket.onmessage = function(evt){
-			var command = JSON.parse(evt.data);
+			var command = Encode(JSON.parse(evt.data));
 			
 			switch(command.Type){
 				case BMESSAGE:
 					message = JSON.parse(window.atob(command.Value))
+					console.log(window.atob(message.Msg))
 					appendNormalMessage(message.User.Name, window.atob(message.Msg))
 				default:
 			}
