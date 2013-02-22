@@ -90,6 +90,7 @@ func (c *Connection) Read() {
 		}
 
 		if cmd.Type == command.BLOGIN {
+			fmt.Println(c.Usr)
 			cmd,err := command.PrepareMessage(command.BMESSAGE, c.Usr, []byte("Logged In"))
 			if err == nil {
 				c.chatRoom.broadcast <- cmd
