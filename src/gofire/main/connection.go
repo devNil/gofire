@@ -38,7 +38,7 @@ func (c *Connection) Read() {
 		//var userName string
 		var found bool
 
-		err = json.Unmarshal([]byte(rawIncome), &cmd)
+		err = json.Unmarshal(rawIncome, &cmd)
 
 		if err == nil {
 			//REGISTER -> {REGISTER, USERNAME}
