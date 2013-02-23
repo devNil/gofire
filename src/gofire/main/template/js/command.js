@@ -20,6 +20,6 @@ function Encode(obj){
 }
 
 Command.prototype.Send = function(websocket){
-	this.value = window.btoa(this.value);
+	this.Value = window.btoa(this.Value);
 	websocket.send(JSON.stringify(this));
 }
