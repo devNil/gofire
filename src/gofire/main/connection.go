@@ -107,7 +107,7 @@ func (c *Connection) Read() {
 			} else {
 				fmt.Println(err)
 			}
-
+			break;
 		}
 	}
 

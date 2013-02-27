@@ -39,7 +39,7 @@ func (s *Server) run() {
 		select {
 		case c := <-s.register:
 			s.registeredConnections[c] = true
-			s.chatRooms[0].register <- c
+			c.chatRoom.register <- c
 			command, err := command.PrepareMessage(command.BMESSAGE, &user.User{"From server"}, []byte("with love"))
 
 			if err == nil {
@@ -49,7 +49,7 @@ func (s *Server) run() {
 			}
 
 		case c := <-s.unregister:
-			s.chatRooms[0].unregister <- c
+			c.chatRoom.unregister <- c
 			delete(s.registeredConnections, c)
 			close(c.send)
 		}
