@@ -8,7 +8,7 @@ import(
 
 type FireServer struct{
 	Name string
-	Addr string
+	Addr string `json:"-"`
 	RegisteredChatRooms []string
 }
 
@@ -27,6 +27,7 @@ func (fs *FireServer)MainHandler(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//Chat-rounting
 const CHAT = "/c/"
 //ChatRoomHandler
 func (fs *FireServer)ChatRoomHandler(w http.ResponseWriter, r *http.Request){
