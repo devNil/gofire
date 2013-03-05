@@ -1,22 +1,22 @@
 //The server package privdes the basic gofire server
 package server
 
-import(
-	"net/http"
+import (
 	"encoding/json"
+	"net/http"
 )
 
-type FireServer struct{
-	Name string
-	Addr string `json:"-"`
+type FireServer struct {
+	Name                string
+	Addr                string `json:"-"`
 	RegisteredChatRooms []string
 }
 
 //a fireserver instance
 var fireServer = new(FireServer)
-var  restCommands = make(map[string]string)
+var restCommands = make(map[string]string)
 
-func init(){
+func init() {
 	AddRestCommand("/api", MainHandler, "Get all commands")
 	AddRestCommand("/api/c", ChatRoomHandler, "Get all chatrooms")
 
@@ -24,23 +24,23 @@ func init(){
 }
 
 //adds a rest command 
-func AddRestCommand(pattern string,handler func(http.ResponseWriter, *http.Request),desc string){
+func AddRestCommand(pattern string, handler func(http.ResponseWriter, *http.Request), desc string) {
 	restCommands[pattern] = desc
 	http.HandleFunc(pattern, handler)
 }
 
-func ListenAndServe(addr string)error{
+func ListenAndServe(addr string) error {
 	fireServer.Addr = addr
 	err := http.ListenAndServe(addr, nil)
 	return err
 }
 
-func initServer(){
+func initServer() {
 	http.HandleFunc("/", MainHandler)
 	http.HandleFunc(CHAT, ChatRoomHandler)
 }
 
-func MainHandler(w http.ResponseWriter, r *http.Request){
+func MainHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path[len(r.URL.Path)-3:] == "api" {
 		apiHandler(w, r)
 	}
@@ -48,31 +48,43 @@ func MainHandler(w http.ResponseWriter, r *http.Request){
 
 //Chat-rounting
 const CHAT = "/c/"
+
 //ChatRoomHandler
-func ChatRoomHandler(w http.ResponseWriter, r *http.Request){
-	chatName := r.URL.Path[len(CHAT):]
-	if len(chatName) == 0{
-		getAllChatrooms(w, r)
-	}else{
-		w.Write([]byte(chatName))
+func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		chatName := r.URL.Path[len(CHAT):]
+		if len(chatName) == 0 {
+			getAllChatrooms(w, r)
+		} else {
+			w.Write([]byte(chatName))
+		}
+	}
+
+	if r.Method == "POST" {
+		w.Write([]byte("Post to /c/"))
 	}
 }
 
-func getAllChatrooms(w http.ResponseWriter, r *http.Request){
-	json,err := json.Marshal(fireServer.RegisteredChatRooms)
-	if err == nil{
+// get /c/ 
+func getAllChatrooms(w http.ResponseWriter, r *http.Request) {
+	json, err := json.Marshal(fireServer.RegisteredChatRooms)
+	if err == nil {
 		w.Write(json)
-	}else{
+	} else {
 		w.Write([]byte("Fail"))
 	}
+}
+
+func addChatRoom() {
+
 }
 
 //Api Hanlder, Handles /api calls on server
-func apiHandler(w http.ResponseWriter, r *http.Request){
+func apiHandler(w http.ResponseWriter, r *http.Request) {
 	json, err := json.Marshal(restCommands)
-	if err != nil{
+	if err != nil {
 		w.Write([]byte("Fail"))
-	}else{
+	} else {
 		w.Write(json)
 	}
 }
