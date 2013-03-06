@@ -9,22 +9,86 @@
         <header>
             <h1>gofire Api-Test</h1>
         </header>
-        <section>
-            <button id="addch">Add Chatroom</button>
+        <content>
+        <section id="chatapi">
+            <h2>ChatRoom</h2>
+            <sub>
+                <h3>GET /api/c</h3>
+                <p>
+                    Get all registered chatrooms
+                </p>
+                <button id="getallch">Get All Chatrooms</button>
+            </sub>
+            <sub>
+                <h3>POST /api/c</h3>
+                <p>
+                    Register a new chatroom
+                </p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>the name of the new chatroom</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <input id="chname" type="text" placeholder="Name of the chat"/><button id="addch">Add Chatroom</button>
+            </sub>
         </section>
+        </content>
         <footer>
             <div id="console">
-                <article>
-                    Hello
-                </article>
+                <!-- Articles inserted by js -->
             </div>
         </footer>
         <script type="application/javascript">
-            var out = new Output("console")
+            var out = new Output("console");
             
-            for(i = 0; i < 200; i++){
-                out.add(i);
+            document.getElementById("getallch").onclick = function(){
+                var url = "http://localhost:8080/api/c"
+                
+                var http = new XMLHttpRequest();
+                
+                http.onreadystatechange = function() {//Call a function when the state changes.
+                    if(http.readyState == 4 && http.status == 200) {
+		              out.add(JSON.stringify(http.responseText));
+	               }
+                }
+                
+                
+                
+                http.open("GET", url, true);
+                
+                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");   
+                http.send(null);
             }
+            
+            document.getElementById("addch").onclick = function(){
+                var url = "http://localhost:8080/api/c"
+                
+                var name = document.getElementById("chname").value;
+                
+                var params = "name="+name;
+                
+                var http = new XMLHttpRequest();
+                
+                http.onreadystatechange = function() {//Call a function when the state changes.
+                    if(http.readyState == 4 && http.status == 200) {
+		              out.add(http.responseText);
+	               }
+                }
+                
+                
+                
+                http.open("POST", url, true);
+                
+                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                http.setRequestHeader("Content-length", params.length);
+                http.setRequestHeader("Connection", "close");
+                
+                http.send(params);
+            };
+            
             
         </script>
     </body>

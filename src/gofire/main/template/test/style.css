@@ -1,0 +1,60 @@
+body {
+    background-color:#EEE;
+    color:#000;
+    margin:0px;
+    height:100%;
+    font-family:"Tahoma", "Arial";
+}
+
+footer{
+    clear:both;
+    padding:5px;
+    z-index:10;
+    position:absolute;
+    bottom:0;
+    width:100%;
+    background-color:#000;
+}
+
+div#console{
+    width:auto;
+    height:240px;
+    background-color:#000;
+    color:#FFF;
+    overflow-y:scroll;
+}
+
+div#console article{
+    padding: 0px 0px 0px 10px;
+    border-bottom:1px solid #555;
+}
+
+h2{
+    border-bottom: 1px solid #000;
+    display:block;
+}
+
+content{
+    height:100%;
+    width:100%;
+}
+
+content section{
+    margin: 10px;
+}
+
+section p{
+    padding:5px;
+    background-color:#FFF;
+    border: 1px #000 solid;
+}
+
+content section sub table{
+    background-color:#FFF;
+    width:400px;
+}
+
+content section sub table tr{
+    background-color:#FFF;
+    border-bottom: 1px solid #000;
+}
