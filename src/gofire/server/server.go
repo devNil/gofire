@@ -4,6 +4,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 //Rounting of the restful api
@@ -58,7 +59,7 @@ func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
 		if len(chatName) == 0 {
 			getAllChatrooms(w, r)
 		} else {
-			w.Write([]byte(chatName))
+			w.Write([]byte(string(chatName)))
 		}
 	}
 
@@ -66,13 +67,19 @@ func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil{
 			//TODO Write error better
-			w.Write([]byte("404"))
+			w.Write([]byte([]byte(string(http.StatusBadRequest))))
 		}else{
 			name := r.FormValue("name")
 			fireServer.RegisteredChatRooms = append(fireServer.RegisteredChatRooms, name)
 			w.Write([]byte(name))
 		}
 	}
+}
+
+func postChatRoom(form url.Values, w http.ResponseWriter){
+	name := form.Get("name")
+	fireServer.RegisteredChatRooms = append(fireServer.RegisteredChatRooms, name)
+	w.Write([]byte(string(http.StatusOK)))
 }
 
 // get /c/ 
