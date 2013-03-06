@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 //Rounting of the restful api
@@ -95,7 +96,13 @@ func getAllChatrooms(w http.ResponseWriter, r *http.Request) {
 
 //get information about an specific chatroom
 func SpecificChatRoomHandler(w http.ResponseWriter, r *http.Request){
-	w.Write([]byte(getChatRoomName(r.URL.Path)))
+	name := getChatRoomName(r.URL.Path)
+	if name != ""{
+		roomcommand := strings.Split(name, "/")
+		w.Write([]byte(roomcommand[1]))
+	}else{
+		w.Write([]byte(string(http.StatusBadRequest)))
+	}
 }
 
 func isCommand(input string)bool{
