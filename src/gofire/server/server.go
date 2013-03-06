@@ -11,6 +11,7 @@ import (
 const(
 	API = "/api"
 	CHAT = "/api/c"
+	CHATROOM = "/api/c/"
 )
 
 type FireServer struct {
@@ -26,7 +27,7 @@ var restCommands = make(map[string]string)
 func init() {
 	AddRestCommand(API, ApiHandler, "Get all commands")
 	AddRestCommand(CHAT, ChatRoomHandler, "Get all chatrooms")
-
+	AddRestCommand(CHATROOM, SpecificChatRoomHandler, "Get specific chatroom info")
 	//initServer()
 }
 
@@ -90,4 +91,22 @@ func getAllChatrooms(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Write([]byte("Fail"))
 	}
+}
+
+//get information about an specific chatroom
+func SpecificChatRoomHandler(w http.ResponseWriter, r *http.Request){
+	w.Write([]byte(getChatRoomName(r.URL.Path)))
+}
+
+func isCommand(input string)bool{
+	return false
+}
+
+//helper function for getting the chatroom
+func getChatRoomName(link string) string{
+	if len(link) == len(CHATROOM){
+		return "" 
+	}
+
+	return link[len(CHATROOM):]
 }
