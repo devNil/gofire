@@ -35,7 +35,7 @@
                 <input id="chname" type="text" placeholder="Name of the chat"/><button id="addch">Add Chatroom</button>
             </sub>
             <sub id="getspecchat">
-                <h3>GET /api/c/<i>CHATNAME/about</i></h2>
+                <h3>GET /api/c/<i>CHATNAME</i>/about</h2>
                 <p>
                     Get information about specific chat
                 </p>
@@ -54,7 +54,7 @@
              document.getElementById("getch").onclick = function(){
                 var name = document.getElementById("cname").value;
                  
-                var url = "http://localhost:8080/api/c/"+name;
+                var url = "http://localhost:8080/api/c/"+name+"/about";
                 
                 var http = new XMLHttpRequest();
                 
