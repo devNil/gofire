@@ -61,7 +61,15 @@ func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		w.Write([]byte("Post to /c/"))
+		err := r.ParseForm()
+		if err != nil{
+			//TODO Write error better
+			w.Write([]byte("404"))
+		}else{
+			name := r.FormValue("name")
+			fireServer.RegisteredChatRooms = append(fireServer.RegisteredChatRooms, name)
+			w.Write([]byte(name))
+		}
 	}
 }
 
