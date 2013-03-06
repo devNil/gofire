@@ -20,7 +20,7 @@ func init() {
 	AddRestCommand("/api", MainHandler, "Get all commands")
 	AddRestCommand("/api/c", ChatRoomHandler, "Get all chatrooms")
 
-	initServer()
+	//initServer()
 }
 
 //adds a rest command 
@@ -47,7 +47,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //Chat-rounting
-const CHAT = "/c/"
+const CHAT = "/api/c"
 
 //ChatRoomHandler
 func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
