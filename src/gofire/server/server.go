@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+//Rounting of the restful api
+const(
+	API = "/api"
+	CHAT = "/api/c"
+)
+
 type FireServer struct {
 	Name                string
 	Addr                string `json:"-"`
@@ -17,8 +23,8 @@ var fireServer = new(FireServer)
 var restCommands = make(map[string]string)
 
 func init() {
-	AddRestCommand("/api", MainHandler, "Get all commands")
-	AddRestCommand("/api/c", ChatRoomHandler, "Get all chatrooms")
+	AddRestCommand(API, ApiHandler, "Get all commands")
+	AddRestCommand(CHAT, ChatRoomHandler, "Get all chatrooms")
 
 	//initServer()
 }
@@ -29,25 +35,21 @@ func AddRestCommand(pattern string, handler func(http.ResponseWriter, *http.Requ
 	http.HandleFunc(pattern, handler)
 }
 
+//A wrapper for the ListenAndServe of net/http
 func ListenAndServe(addr string) error {
 	fireServer.Addr = addr
 	err := http.ListenAndServe(addr, nil)
 	return err
 }
 
-func initServer() {
-	http.HandleFunc("/", MainHandler)
-	http.HandleFunc(CHAT, ChatRoomHandler)
-}
-
-func MainHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path[len(r.URL.Path)-3:] == "api" {
-		apiHandler(w, r)
+func ApiHandler(w http.ResponseWriter, r *http.Request){
+	json, err := json.Marshal(restCommands)
+	if err != nil {
+		w.Write([]byte("404"))
+	} else {
+		w.Write(json)
 	}
 }
-
-//Chat-rounting
-const CHAT = "/api/c"
 
 //ChatRoomHandler
 func ChatRoomHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,19 +82,5 @@ func getAllChatrooms(w http.ResponseWriter, r *http.Request) {
 		w.Write(json)
 	} else {
 		w.Write([]byte("Fail"))
-	}
-}
-
-func addChatRoom() {
-
-}
-
-//Api Hanlder, Handles /api calls on server
-func apiHandler(w http.ResponseWriter, r *http.Request) {
-	json, err := json.Marshal(restCommands)
-	if err != nil {
-		w.Write([]byte("Fail"))
-	} else {
-		w.Write(json)
 	}
 }
