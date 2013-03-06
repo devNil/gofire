@@ -15,6 +15,7 @@ h1{
 }
 
 footer{
+    display:block;
     clear:both;
     padding:5px;
     z-index:10;
@@ -26,7 +27,7 @@ footer{
 
 div#console{
     width:auto;
-    height:240px;
+    height:140px;
     background-color:#000;
     color:#FFF;
     overflow-y:scroll;
@@ -44,12 +45,14 @@ h2{
 }
 
 content{
-    height:100%;
     width:100%;
+    overflow-y:scroll;
+    position:absolute;
 }
 
 content section{
     margin: 10px;
+    overflow-y:scroll;
 }
 
 section p{
@@ -57,6 +60,11 @@ section p{
     background-color:#FFF;
     border: 1px #000 solid;
     border-radius: 5px;
+}
+
+content{
+    height:auto;
+    overflow-y:scroll;
 }
 
 content section sub table{
