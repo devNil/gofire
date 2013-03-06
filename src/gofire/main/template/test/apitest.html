@@ -2,9 +2,30 @@
 <html>
     <head>
         <title>Apitest</title>
+        <link rel="stylesheet" href="style.css" type="text/css" media="all" charset="utf-8">
+        <script src="console.js" type="application/javascript"></script>
     </head>
     <body>
-        <h1>Hello Api</h1>
-        <p> Short api list, so</p>
+        <header>
+            <h1>gofire Api-Test</h1>
+        </header>
+        <section>
+            <button id="addch">Add Chatroom</button>
+        </section>
+        <footer>
+            <div id="console">
+                <article>
+                    Hello
+                </article>
+            </div>
+        </footer>
+        <script type="application/javascript">
+            var out = new Output("console")
+            
+            for(i = 0; i < 200; i++){
+                out.add(i);
+            }
+            
+        </script>
     </body>
 </html>
