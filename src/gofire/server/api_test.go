@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
+	"net/url"
 )
 
 const ADRESS = "http://localhost"
@@ -50,6 +51,24 @@ func TestChatOverview(t *testing.T) {
 	if string(body) != string(http.StatusNotFound) {
 		t.Log("Not the same")
 		t.Fail()
+	}
+
+}
+
+//Test for adding a chat room
+func TestAddChat(t *testing.T){
+	response, err := http.PostForm(ADRESS + ":8080/api/c", url.Values{"name": {"HelloWorld"}})
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+
+	if string(body) != "HelloWorld" {
+		t.Log("Answer is not right")
+		t.Fail()
+
 	}
 
 }
