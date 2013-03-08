@@ -17,9 +17,9 @@ const (
 )
 
 type FireServer struct {
-	Addr                string `json:"-"`
-	RegisteredChatRooms []string
-	User                []user.User `json:"-"`
+	Addr                string `json:"-"`//The Adress the server is running on
+	RegisteredChatRooms []string//All registered chatrooms
+	User                []user.User `json:"-"`//All user on the chatroom
 }
 
 //a fireserver instance
