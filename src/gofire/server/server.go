@@ -3,6 +3,7 @@ package server
 
 import (
 	"encoding/json"
+	"gofire/user"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,6 +19,7 @@ const (
 type FireServer struct {
 	Addr                string `json:"-"`
 	RegisteredChatRooms []string
+	User                []user.User `json:"-"`
 }
 
 //a fireserver instance
