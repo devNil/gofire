@@ -2,11 +2,13 @@
 package server
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"gofire/user"
 	"net/http"
-	"net/url"
-	"strings"
+	//"net/url"
+	"net"
+	//"time"
+	//"strings"
 )
 
 //Rounting of the restful api
@@ -17,20 +19,27 @@ const (
 )
 
 type FireServer struct {
-	Addr                string `json:"-"`//The Adress the server is running on
-	RegisteredChatRooms []string//All registered chatrooms
-	User                []user.User `json:"-"`//All user on the chatroom
+	Addr                string      `json:"-"` //The Adress the server is running on
+	RegisteredChatRooms []string    //All registered chatrooms
+	User                []user.User `json:"-"` //All user on the chatroom
+	CloseChannel        chan int
+}
+
+func addRestHandler(fireServer *FireServer, fn func(*FireServer, http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, request *http.Request) {
+		fn(fireServer, w, request)
+	}
 }
 
 //a fireserver instance
-var fireServer = new(FireServer)
 var restCommands = make(map[string]string)
 
 func init() {
-	AddRestCommand(API, ApiHandler, "Get all commands")
-	AddRestCommand(CHAT, ChatRoomHandler, "Get all chatrooms")
-	AddRestCommand(CHATROOM, SpecificChatRoomHandler, "Get specific chatroom info")
+	//AddRestCommand(API, ApiHandler, "Get all commands")
+	//AddRestCommand(CHAT, ChatRoomHandler, "Get all chatrooms")
+	//AddRestCommand(CHATROOM, SpecificChatRoomHandler, "Get specific chatroom info")
 	//initServer()
+	http.HandleFunc("/hello", HelloHandler)
 }
 
 //adds a rest command 
@@ -39,14 +48,55 @@ func AddRestCommand(pattern string, handler func(http.ResponseWriter, *http.Requ
 	http.HandleFunc(pattern, handler)
 }
 
-//A wrapper for the ListenAndServe of net/http
-func ListenAndServe(addr string) error {
-	fireServer.Addr = addr
-	err := http.ListenAndServe(addr, nil)
-	return err
+func (fireServer *FireServer) Close() {
+	fireServer.CloseChannel <- 0
 }
 
-func ApiHandler(w http.ResponseWriter, r *http.Request) {
+func (fireServer *FireServer) run() error{
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/addr", addRestHandler(fireServer, HelloAddress))
+	mux.HandleFunc("/hello", HelloHandler)
+	s := &http.Server{
+		Handler:        mux,
+	}
+	l, e := net.Listen("tcp", fireServer.Addr)
+
+	if e != nil {
+		panic(e.Error())
+	}
+
+	go func(){
+		<-fireServer.CloseChannel
+		l.Close()
+	}()
+
+	return	s.Serve(l)
+}
+
+func HelloAddress(fireServer *FireServer, w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(fireServer.Addr))
+}
+
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello World"))
+}
+
+//A wrapper for the ListenAndServe of net/http
+func NewFireServer(addr string) *FireServer{
+	fireServer := &FireServer{
+		Addr:                addr,
+		RegisteredChatRooms: make([]string, 0),
+		User:                make([]user.User, 0),
+		CloseChannel:        make(chan int, 1),
+	}
+	return fireServer
+}
+
+func (fireServer *FireServer) ListenAndServe()error{
+	return fireServer.run()
+}
+
+/*func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	json, err := json.Marshal(restCommands)
 	if err != nil {
 		w.Write([]byte("404"))
@@ -117,4 +167,4 @@ func getChatRoomName(link string) string {
 	}
 
 	return link[len(CHATROOM):]
-}
+}*/
