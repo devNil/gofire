@@ -19,3 +19,18 @@ type ChatRoom struct{
 	unregister chan *Connection
 	registeredConnections map[*Connection]bool
 }
+
+func (chatroom *ChatRoom) Run(){
+	for{
+		select{
+		case c <- chatroom.register:
+			chatroom.registeredConnections[c] = true
+			//TODO  code for broadcasting login 
+			break
+		case c <- chatroom.unregister:
+			delete(chatroom.registeredConnections, c)
+			//TODO code for broadcastin logout
+			break
+		}
+	}
+}
