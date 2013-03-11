@@ -1,12 +1,14 @@
 package main
 
 import (
-	"code.google.com/p/go.net/websocket"
+	//"code.google.com/p/go.net/websocket"
 	"gofire/command"
 	"gofire/message"
 	"net/http"
-	"os"
-	"os/signal"
+	//"os"
+	//"os/signal"
+	srv "gofire/server"
+	"gofire/server/api"
 )
 
 //constants 
@@ -33,24 +35,32 @@ var server = Server{
 
 func main() {
 
-	go server.run()
+	//go server.run()
 
 	//cleanup if command+c
-	c := make(chan os.Signal, 1)
+	/*c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		<-c
 		server.cleanUp()
 		os.Exit(0)
-	}()
+	}()*/
 
-	http.HandleFunc("/upload", uploadHandler)
+
+
+	fireserver := srv.NewFireServer()
+
+	http.HandleFunc("/api",srv.AddHandleFunc(fireserver,api.Ping))
+
+	//fireserver.ListenAndServe()
+
+	//http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/index.html", loginHandler)
-	http.HandleFunc("/chat.html", chatHandler)
-	http.HandleFunc("/doLogin", doLogin)
-	http.Handle("/ws", websocket.Handler(wsHandler))
-	err := http.ListenAndServe(ADDR, nil)
+	//http.HandleFunc("/chat.html", chatHandler)
+	//http.HandleFunc("/doLogin", doLogin)
+	//http.Handle("/ws", websocket.Handler(wsHandler))
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
 	}
