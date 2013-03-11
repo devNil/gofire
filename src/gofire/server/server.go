@@ -15,12 +15,23 @@ type FireServer struct {
 	User                []user.User `json:"-"` //All user on the chatroom
 }
 
-type FireServerHandler func(*FireServer, http.ResponseWriter, *http.Request)
+type FireServerFunc func(*FireServer, http.ResponseWriter, *http.Request)
 
-func AddHandler(fireServer *FireServer, fn FireServerHandler) func(http.ResponseWriter, *http.Request) {
+type FireServerHandler interface{
+	Handle(*FireServer, http.ResponseWriter, *http.Request)
+}
+
+func AddHandleFunc(fireServer *FireServer, fn FireServerFunc) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, request *http.Request) {
 		fn(fireServer, w, request)
 	}
+}
+
+func AddHandler(fireServer *FireServer, handler FireServerHandler) func(http.ResponseWriter, *http.Request){
+	return func(w http.ResponseWriter, request *http.Request){
+		handler.Handle(fireServer, w, request)
+	}
+
 }
 
 func NewFireServer() *FireServer{
