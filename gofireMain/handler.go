@@ -70,7 +70,7 @@ func openFile(path string) ([]byte, error) {
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request) {
-	indexTemplate, _ := template.ParseFiles("template/chat.html")
+	indexTemplate, _ := template.ParseFiles(STATICDIR+"chat.html")
 	indexTemplate.Execute(w, r.Host)
 }
 
@@ -79,7 +79,7 @@ func doLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	html, err := ioutil.ReadFile("template/index.html")
+	html, err := ioutil.ReadFile(STATICDIR+"index.html")
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return

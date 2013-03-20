@@ -14,7 +14,7 @@ import (
 //constants 
 const ADDR = ":8080"
 const TEMPDIR = "temp/"
-const STATICDIR = "template/"
+const STATICDIR = "gofireTemplate/"
 
 //global vars 
 //default chatroom
