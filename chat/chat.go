@@ -9,15 +9,15 @@ import(
 
 type Connection struct{
 	User *user.User //User in connection
-	conn *websocket.Conn
+	conn *websocket.Conn //a websocket-connection
 	send chan *command.Command
 }
 
 type ChatRoom struct{
 	Name string //The name of the chatroom, also the id of a chatroom
-	register chan *Connection
-	unregister chan *Connection
-	registeredConnections map[*Connection]bool
+	register chan *Connection //Channel for incoming user
+	unregister chan *Connection //Channel for "logout-user"
+	registeredConnections map[*Connection]bool //Every Connection to a specific chatroom is tracked down here
 }
 
 func (chatroom *ChatRoom) Run(){
@@ -29,7 +29,7 @@ func (chatroom *ChatRoom) Run(){
 			break
 		case c <- chatroom.unregister:
 			delete(chatroom.registeredConnections, c)
-			//TODO code for broadcastin logout
+			//TODO code for broadcasting logout
 			break
 		}
 	}
