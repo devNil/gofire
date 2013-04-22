@@ -23,7 +23,7 @@ func init() {
 
 const GofireSession = "gSession"
 
-func checkSession(r *http.Request)string{
+func CheckSession(r *http.Request)string{
 	if cookie, err :=r.Cookie(GofireSession); err != nil{
 		return ""
 	}else{
@@ -39,6 +39,10 @@ func checkSession(r *http.Request)string{
 //Handler for the index-site
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//Session validation
+	if token := CheckSession(r); token != ""{
+		http.Redirect(w, r, "/chat", http.StatusTextOk)
+		return
+	}
 	w.Header().Set("content-type", "text/html")
 	index.Execute(w, nil)
 }
