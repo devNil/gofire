@@ -7,6 +7,4 @@ architecture
 * using postgres as database
 
 
-WE LOVE THE GO CODE CUZ GOOGLE'S GOOD TO US
-
-![mascots](http://gofy.cat-v.org/_imgs/mascosts.jpg)
+WE LOVE THE GO CODE CUZ GOOGLE'S GOOD TO US !!!
