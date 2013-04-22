@@ -6,6 +6,8 @@ import(
 	"net/http"
 	"os"
 	"gofire/web"
+	"gofire/socket"
+	"code.google.com/p/go.net/websocket"
 )
 
 const StandardPort = "8080"
@@ -26,6 +28,11 @@ func main(){
 
 	http.HandleFunc("/chat", web.ChatHandler)
 	log.Println("ChatHandler registered")
+
+	socket.Start()
+	log.Println("Fireserver is running")
+
+	http.Handle("/ws",websocket.Handler(socket.SocketHandler))
 
 	log.Printf("Server started on port: :%s", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port),nil)
