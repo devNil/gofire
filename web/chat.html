@@ -1,0 +1,135 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Table</title>
+        <style type="text/css">
+            html, body{
+                font-family:Tahoma, Arial;
+                font-size:30px;
+                margin:0px;
+            }
+
+            ::-webkit-scrollbar {
+                width: 0px;
+            }
+  
+
+            div#chat{
+                margin:40px 0px 0px 40px;
+                height:640px;    
+            }
+
+            div#chatentries{
+                height:610px;
+                width:90%;
+                overflow-y:scroll;
+            }
+
+            input#chattext{
+                width:400px;
+                font-size:30px;
+                border:0px;
+            }
+
+            input:focus{
+                outline:0px;
+            }
+
+            input#chattext{
+                width:400px;
+                font-size:30px;
+                border:0px;
+            }
+            
+            ul#stripes{
+                list-style:none;
+                width:100%;
+                position:fixed;
+                top:0px;
+                -webkit-margin-before:0px;
+                -webkit-margin-after:0px;
+                -webkit-padding-start: 0px;
+                background-color:white;
+            }
+            
+            ul#stripes li{
+                float:left;
+                width:25%;
+                height:8px;
+            }
+            
+            .blue1{
+                background-color:#086FA1;
+            }
+            
+            .blue2{
+                background-color:#3CA0D0;
+            }
+            
+            .blue3{
+                background-color:#63ADD0;
+            }
+            
+            .orange1{
+                background-color:#FF8900;
+            }
+            
+            #contact{
+                position:  absolute;
+                width:300px;
+                height:500px;
+                left: 0;
+                top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
+                width: 200px; 
+                background: rgba(255,255,255,0.66); 
+                border: 2px  solid rgba(0,0,0,0.5); 
+                border-radius: 4px; padding: 8px;
+            }
+            
+            
+        </style>
+        <!--schemeid: 3s21Tw0w0w0w0-->
+    </head>
+    <body>
+        <ul id="stripes">
+            <li class="blue1">&nbsp;</li>
+            <li class="blue2">&nbsp;</li>
+            <li class="blue3">&nbsp;</li>
+            <li class="orange1">&nbsp;</li>
+        </ul>
+        <div class="stripe blue1">
+        </div>
+        <div id="chat">
+            <div id="chatentries"></div>
+            <input type="text" placeholder="Type..." id="chattext">
+        </div>
+        <script type="application/javascript">    
+            
+            var ws = "ws://{{.}}/ws";
+            console.log(ws);
+            
+            document.getElementById("chattext").focus();
+            
+            var createChatEntry = function(text){
+                    var div = document.createElement("div");
+                    div.innerText = text;
+                    document.getElementById("chatentries").appendChild(div);
+                    document.getElementById("chatentries").scrollTop =  document.getElementById("chatentries").scrollHeight;
+                
+            }
+            
+            var submit = function(text){
+                createChatEntry(text);
+            }
+            
+            document.getElementById("chattext").onkeydown = function(event){
+                var code = event.keyCode;
+                if(code === 13){
+                    submit(this.value);
+                    this.value = "";
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </body>
+</html>
