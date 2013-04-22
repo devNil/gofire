@@ -11,6 +11,7 @@ import (
 )
 
 var index *template.Template
+var chat *template.Template
 
 func init() {
 	tdir := os.Getenv("TEMPLATE")
@@ -19,6 +20,8 @@ func init() {
 	indexPath := fmt.Sprintf("%s%s", tdir, "index.html")
 	index = template.Must(template.ParseFiles(indexPath))
 
+	chatPath := fmt.Sprintf("%s%s", tdir, "chat.html")
+	chat = template.Must(template.ParseFiles(chatPath))
 }
 
 const GofireSession = "gSession"
