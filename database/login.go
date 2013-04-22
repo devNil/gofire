@@ -42,7 +42,7 @@ func IsUserPasswordValid(username, password string)string{
 	err := row.Scan(&session)
 
 	if err != nil{
-		return nil
+		return ""
 	}
 
 	return session
