@@ -36,7 +36,7 @@ func init() {
 func sha512(input string) string {
 	h := sha.New()
 	r := h.Sum([]byte(input))
-	return fmt.Sprint("%x", r)
+	return fmt.Sprintf("%x", r)
 }
 
 //Opens a connection to the database

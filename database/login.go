@@ -36,13 +36,12 @@ func IsUserPasswordValid(username, password string)string{
 	defer conn.Close()
 
 	var session string
-	
-	row := conn.QueryRow(qIsUserPasswordValid, username, password)
+
+	row := conn.QueryRow(qIsUserPasswordValid, username, sha512(password))
 
 	err := row.Scan(&session)
 
 	if err != nil{
-		log.Println(err)
 		return ""
 	}
 
