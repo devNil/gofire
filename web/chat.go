@@ -11,4 +11,6 @@ func ChatHandler(w http.ResponseWriter, r *http.Request){
 		http.Redirect(w, r, "/", http.StatusOk)
 		return
 	}
+
+	chat.Execute(w, r.Host)
 }
