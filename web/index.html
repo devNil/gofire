@@ -1,0 +1,46 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>gofire</title>
+    </head>
+    <style>
+        html, body{
+            font-family:Tahoma, Arial;
+            margin:0px;
+        }
+        
+        #loginbox{
+            margin:0px auto;
+            margin-top:180px;
+            width:300px;
+            background-color:#AAA;
+            border-radius:8px;
+        }
+        
+        input{
+            clear:both;
+            width:250px;
+            height:40px;
+            margin:2px;
+        }
+        
+        #submit{
+            font-size: 40px;
+            width:250px;
+            margin:0px;
+        }
+        
+    </style>
+    <body>
+        <div id="loginbox">
+            <h1>Login</h1>
+            <form action="/login", method="post">
+                <input type="text" name="user" placeholder="Username">
+                <input type="password" name="pw" placeholder="Password">
+                <input type="submit" value="Sign In" id="submit">
+            </form>
+        </div>
+        
+        
+    </body>
+</html>
