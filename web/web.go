@@ -40,7 +40,7 @@ func CheckSession(r *http.Request)string{
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//Session validation
 	if token := CheckSession(r); token != ""{
-		http.Redirect(w, r, "/chat", http.StatusTextOk)
+		http.Redirect(w, r, "/chat", http.StatusFound)
 		return
 	}
 	w.Header().Set("content-type", "text/html")
