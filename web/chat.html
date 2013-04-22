@@ -106,7 +106,20 @@
         <script type="application/javascript">    
             
             var ws = "ws://{{.}}/ws";
-            console.log(ws);
+            var connection = new WebSocket(ws)
+            
+            connection.onerror = function(){
+                console.log("error");
+            }
+            
+            connection.onmessage = function(event){
+                var msg = JSON.parse(event.data);
+                createChatEntry(msg.Username+": "+msg.Text)
+            }
+            
+            connection.onclose = function(event){
+                console.log("close");
+            }
             
             document.getElementById("chattext").focus();
             
@@ -115,11 +128,10 @@
                     div.innerText = text;
                     document.getElementById("chatentries").appendChild(div);
                     document.getElementById("chatentries").scrollTop =  document.getElementById("chatentries").scrollHeight;
-                
             }
             
             var submit = function(text){
-                createChatEntry(text);
+                connection.send(JSON.stringify({Username:"", Text:text}));
             }
             
             document.getElementById("chattext").onkeydown = function(event){
