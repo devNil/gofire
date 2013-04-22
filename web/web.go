@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	db "gofire/database"
 )
 
 var index *template.Template
@@ -19,6 +20,21 @@ func init() {
 	index = template.Must(template.ParseFiles(indexPath))
 
 }
+
+const GofireSession = "gSession"
+
+func checkSession(r *http.Request)string{
+	if cookie, err :=r.Cookie(GofireSession); err != nil{
+		return ""
+	}else{
+		if db.IsSessionValid(cookie.Value){
+			return cookie.Value
+		}
+		return ""
+	}
+	return ""
+}
+
 
 //Handler for the index-site
 func IndexHandler(w http.ResponseWriter, r *http.Request) {

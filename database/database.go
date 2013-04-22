@@ -42,9 +42,10 @@ func sha512(input string) string {
 //Opens a connection to the database
 //if an error occurs, gofire panics
 func Open() *sql.DB {
-	if db, err := sql.Open("postgres", fmt.Sprintf(url, dUser, dPq, dDb, dMode, dHost)); err != nil {
+	db, err := sql.Open("postgres", fmt.Sprintf(url, dUser, dPw, dDb, dMode, dHost))
+	if err != nil{
 		panic(err)
-	} else {
-		return db
 	}
+
+	return db
 }

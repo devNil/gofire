@@ -1,8 +1,8 @@
 package database
 
 import(
-	"database/sql"
-	_ "github.com/bmizerany/pq"
+	//"database/sql"
+	//_ "github.com/bmizerany/pq"
 	"log"
 )
 
@@ -14,7 +14,7 @@ func IsSessionValid(token string)bool{
 
 	var count int64
 
-	row := db.QueryRow(qIsSessionValid, token)
+	row := conn.QueryRow(qIsSessionValid, token)
 	
 	err := row.Scan(&count)
 
