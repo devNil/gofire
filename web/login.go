@@ -2,7 +2,7 @@ package web
 
 import(
 	"net/http"
-	db "database/gofire"
+	db "gofire/database"
 	"time"
 )
 
