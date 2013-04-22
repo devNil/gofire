@@ -6,7 +6,7 @@ import(
 	"log"
 )
 
-const qIsSessionValid = "select count(*) from gf_users where session=$1"
+const qIsSessionValid = "select count(*) from gf_user where session=$1"
 
 func IsSessionValid(token string)bool{
 	conn := Open()
@@ -27,7 +27,7 @@ func IsSessionValid(token string)bool{
 
 }
 
-const qIsUserPasswordValid = "select session from gf_users where login=$1 and pw=$2 "
+const qIsUserPasswordValid = "select session from gf_user where login=$1 and pw=$2 "
 
 //Checks if user and password combination are valid
 //returns "" if not, else the session token for the user
@@ -42,6 +42,7 @@ func IsUserPasswordValid(username, password string)string{
 	err := row.Scan(&session)
 
 	if err != nil{
+		log.Println(err)
 		return ""
 	}
 
