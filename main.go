@@ -21,6 +21,9 @@ func main(){
 	http.HandleFunc("/", web.IndexHandler)
 	log.Println("IndexHandler registered")
 
+	http.HandleFunc("/login", web.LoginHandler)
+	log.Println("LoginHandler registered")
+
 	log.Printf("Server started on port: :%s", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port),nil)
 	panic(err)
