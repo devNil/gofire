@@ -26,3 +26,24 @@ func IsSessionValid(token string)bool{
 	return count == 1
 
 }
+
+const qIsUserPasswordValid = "select session from gf_users where login=$1 and pw=$2 "
+
+//Checks if user and password combination are valid
+//returns "" if not, else the session token for the user
+func IsUserPasswordValid(username, password string)string{
+	conn := Open()
+	defer conn.Close()
+
+	var session string
+	
+	row := conn.QueryRow(qIsUserPasswordValid, username, password)
+
+	err := row.Scan(&session)
+
+	if err != nil{
+		return nil
+	}
+
+	return session
+}
