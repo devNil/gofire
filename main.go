@@ -26,6 +26,9 @@ func main(){
 	http.HandleFunc("/login", web.LoginHandler)
 	log.Println("LoginHandler registered")
 
+	http.HandleFunc("/logout", web.LogoutHandler)
+	log.Println("LogoutHandler registered")
+
 	http.HandleFunc("/chat", web.ChatHandler)
 	log.Println("ChatHandler registered")
 
