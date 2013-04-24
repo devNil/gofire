@@ -85,7 +85,7 @@
                 border: 2px  solid rgba(0,0,0,0.5); 
                 border-radius: 4px; padding: 8px;
             }
-			input#submit{
+			a#logout{
 				float:right;
 				margin-top:20px;
 			}
@@ -105,10 +105,8 @@
         <div id="chat">
             <div id="chatentries"></div>
             <input type="text" placeholder="Type..." id="chattext">
-		</div>
-		<form action="/logout", method="post">
-			<input type="submit" value="Logout" id="submit">
-		</form>
+        </div>
+        <a id="logout" href="/logout">logout</a>
         <script type="application/javascript">    
             
             var ws = "ws://{{.}}/ws";
