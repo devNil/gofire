@@ -12,7 +12,15 @@ import(
 
 const StandardPort = "8080"
 
+const StandardAddress = "localhost"
+
 func main(){
+
+	addr := os.Getenv("ADRESS")
+
+	if addr == ""{
+		addr = StandardAddress
+	}
 
 	port := os.Getenv("PORT")
 
@@ -37,7 +45,7 @@ func main(){
 
 	http.Handle("/ws",websocket.Handler(socket.SocketHandler))
 
-	log.Printf("Server started on port: :%s", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port),nil)
+	log.Printf("Server started on : %s:%s",addr, port)
+	err := http.ListenAndServe(fmt.Sprintf("%s:%s",addr,port),nil)
 	panic(err)
 }
