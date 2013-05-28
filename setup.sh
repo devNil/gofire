@@ -4,6 +4,7 @@
 export PORT=8080
 #Template-Path
 export TEMPLATE=template/*
+export STATIC=static/
 #database user
 export DUSER=$USER
 #database user password
