@@ -10,18 +10,14 @@ import (
 	db "gofire/database"
 )
 
-var index *template.Template
-var chat *template.Template
+var templates *template.Template
 
 func init() {
 	tdir := os.Getenv("TEMPLATE")
 	log.Printf("Template Directory: %s\n", tdir)
 
-	indexPath := fmt.Sprintf("%s%s", tdir, "index.html")
-	index = template.Must(template.ParseFiles(indexPath))
+    templates = template.Must(template.ParseGlob(tdir))
 
-	chatPath := fmt.Sprintf("%s%s", tdir, "chat.html")
-	chat = template.Must(template.ParseFiles(chatPath))
 }
 
 const GofireSession = "gSession"
