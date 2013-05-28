@@ -2,7 +2,6 @@
 package web
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -43,5 +42,5 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("content-type", "text/html")
-	index.Execute(w, nil)
+    templates.ExecuteTemplate(w, "login", nil)
 }
