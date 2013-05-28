@@ -1,0 +1,29 @@
+html, body{
+    margin:0;
+    background-color:hsl(0, 0%, 91%);
+    font-family:Tahoma, Arial;
+}
+
+#loginbox{
+    margin:0px auto;
+    margin-top:80px;
+    width:400px;
+    height:500px;
+    background-color:#ededed;
+    border-radius:3px;
+    border: hsl(0, 0%, 80%) solid 1px;
+}
+
+#loginbox img{
+    margin:2% 12.5% 2% 12.5%;
+}
+
+input{
+    width:90%;
+    float:left;
+    margin:0% 5% 2% 5%;
+    padding:10px;
+    font-size:18px;
+    background-color:hsl(0, 0%, 88%);
+    border:1px solid hsl(0, 0%, 80%);
+}
