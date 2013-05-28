@@ -7,9 +7,12 @@ import (
 	"net/http"
 	"os"
 	db "gofire/database"
+    "fmt"
 )
 
 var templates *template.Template
+
+var staticDir string
 
 func init() {
 	tdir := os.Getenv("TEMPLATE")
@@ -17,6 +20,8 @@ func init() {
 
     templates = template.Must(template.ParseGlob(tdir))
 
+    staticDir = os.Getenv("STATIC")
+    log.Println("Static Dir: ", staticDir)
 }
 
 const GofireSession = "gSession"
@@ -43,4 +48,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("content-type", "text/html")
     templates.ExecuteTemplate(w, "login", nil)
+}
+
+func StaticHandler(w http.ResponseWriter, r *http.Request){
+    http.ServeFile(w, r, fmt.Sprint(staticDir, r.URL.Path[1:]))
 }
