@@ -3,7 +3,7 @@
 #PORT for webserver
 export PORT=8080
 #Template-Path
-export TEMPLATE=web/
+export TEMPLATE=template/
 #database user
 export DUSER=$USER
 #database user password
