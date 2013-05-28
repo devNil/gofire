@@ -13,6 +13,6 @@ func ChatHandler(w http.ResponseWriter, r *http.Request){
 	}
 
 	w.Header().Set("content-type", "text/html")
-	chat.Execute(w, r.Host)
+    templates.ExecuteTemplate(w,"chat", r.Host)
 	return
 }
