@@ -31,6 +31,9 @@ func main(){
 	http.HandleFunc("/", web.IndexHandler)
 	log.Println("IndexHandler registered")
 
+    http.HandleFunc("/css/", web.StaticHandler)
+    http.HandleFunc("/img/", web.StaticHandler)
+
 	http.HandleFunc("/login", web.LoginHandler)
 	log.Println("LoginHandler registered")
 
