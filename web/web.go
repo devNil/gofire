@@ -8,11 +8,17 @@ import (
 	"os"
 	db "gofire/database"
     "fmt"
+    "github.com/gorilla/sessions"
 )
 
 var templates *template.Template
 
 var staticDir string
+
+const cookieName = "this-is-the-most-awesome-cookie-name"
+
+//memory-cookiename
+var store = sessions.NewCookieStore([]byte("you-cannot-hack-this"))
 
 func init() {
 	tdir := os.Getenv("TEMPLATE")
