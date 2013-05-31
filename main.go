@@ -6,8 +6,8 @@ import(
 	"net/http"
 	"os"
 	"gofire/web"
-	"gofire/socket"
 	"code.google.com/p/go.net/websocket"
+    "gofire/socket"
 )
 
 const StandardPort = "8080"
@@ -46,7 +46,7 @@ func main(){
 	socket.Start()
 	log.Println("Fireserver is running")
 
-	http.Handle("/ws",websocket.Handler(socket.SocketHandler))
+	http.Handle("/ws",websocket.Handler(web.SocketHandler))
 
 	log.Printf("Server started on : %s:%s",addr, port)
 	err := http.ListenAndServe(fmt.Sprintf("%s:%s",addr,port),nil)
