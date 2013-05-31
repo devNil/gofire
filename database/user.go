@@ -19,7 +19,7 @@ func GetUser(id int64)(*User, error){
     var mod int64
 
     row := conn.QueryRow(qGetUser, id)
-    err := row.Scan(user.Id, user.Login, &mod, user.Session)
+    err := row.Scan(&user.Id, &user.Login, &mod, &user.Session)
 
     user.Admin = mod == 1
 
