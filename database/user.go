@@ -21,7 +21,7 @@ func GetUser(id int64)(*User, error){
     row := conn.QueryRow(qGetUser, id)
     err := row.Scan(&user.Id, &user.Login, &mod, &user.Session)
 
-    user.Admin = mod == 1
+    user.Admin = mod == 0
 
     return user, err
 }
