@@ -2,6 +2,8 @@ package web
 
 import(
 	"net/http"
+    "gofire/database"
+    "log"
 )
 
 func ChatHandler(w http.ResponseWriter, r *http.Request){
@@ -13,7 +15,24 @@ func ChatHandler(w http.ResponseWriter, r *http.Request){
         return
     }
 
+    id, _ := session.Values["id"].(int64)
+
+    user , err := database.GetUser(id)
+
+    if err != nil{
+        log.Println(err)
+        http.Redirect(w,r, "/", http.StatusFound)
+        return
+    }
+
 	w.Header().Set("content-type", "text/html")
-    templates.ExecuteTemplate(w,"chat", r.Host)
+    
+    values := map[interface{}]interface{}{
+        "Host":r.Host,
+        "User":user,
+    }
+
+    err = templates.ExecuteTemplate(w,"chat", values)
+    log.Println(err)
 	return
 }

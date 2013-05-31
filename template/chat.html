@@ -103,6 +103,10 @@
         </ul>
         <div class="stripe blue1">
         </div>
+        {{if .User.Admin}}
+                <!--Should be admin-panel-->
+                <strong>Hallo Admin</strong>
+            {{end}}
         <div id="chat">
             <div id="chatentries"></div>
             <input type="text" placeholder="Type..." id="chattext">
@@ -110,7 +114,7 @@
         <a id="logout" href="/logout">logout</a>
         <script type="application/javascript">    
             
-            var ws = "ws://{{.}}/ws";
+            var ws = "ws://{{.Host}}/ws";
             var connection = new WebSocket(ws)
             
             connection.onerror = function(){
