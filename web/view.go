@@ -5,8 +5,8 @@ import(
 )
 
 type View struct{
-    Post:func(http.ResponseWriter, *http.Request)
-    Get:func(http.ResponseWriter, *http.Request)
+    Post func(http.ResponseWriter, *http.Request)
+    Get func(http.ResponseWriter, *http.Request)
 }
 
 func(v *View) ServeHTTP(w http.ResponseWriter, r *http.Request){
