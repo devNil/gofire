@@ -43,6 +43,8 @@ func main(){
 	http.HandleFunc("/chat", web.ChatHandler)
 	log.Println("ChatHandler registered")
 
+    http.Handle("/settings", web.SettingsHandle)
+
 	socket.Start()
 	log.Println("Fireserver is running")
 
