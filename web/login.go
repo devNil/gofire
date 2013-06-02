@@ -6,6 +6,9 @@ import(
     "gofire/database"
 )
 
+
+var maxAge = 2592000 // default
+
 func LoginHandler(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
 	username := r.FormValue("user")
@@ -30,7 +33,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request){
     }
 
     session.Values["id"] = id
-
+	session.Options.MaxAge = maxAge
     store.Save(r, w, session)
 
 	http.Redirect(w, r, "/chat", http.StatusFound)

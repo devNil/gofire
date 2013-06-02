@@ -10,7 +10,11 @@ func ChatHandler(w http.ResponseWriter, r *http.Request){
 
     session, err := store.Get(r, cookieName)
 
-    if err != nil || session.IsNew {
+    // Pretty useless atm. Gorilla restores the sessions
+	// values from the clients cookie value
+	if session.Values["id"] == nil || session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
         http.Redirect(w,r, "/", http.StatusFound)
         return
     }
