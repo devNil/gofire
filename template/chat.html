@@ -3,11 +3,14 @@
 <html>
     <head>
         <title>Table</title>
-        <style type="text/css">
+		<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.1.0/pure-min.css">
+		<style type="text/css">
+		    /* ugly hack to get pure-grids work without 1px gap... */
+			* { margin: -1px; padding: -1px;}
             html, body{
                 font-family:Tahoma, Arial;
                 font-size:30px;
-                margin:0px;
+     
             }
 
             ::-webkit-scrollbar {
@@ -16,12 +19,12 @@
   
 
             div#chat{
+				letter-spacing: normal;
                 margin:40px 0px 0px 40px;
-                height:640px;    
             }
 
             div#chatentries{
-                height:610px;
+                height:70%;
                 width:90%;
                 overflow-y:scroll;
             }
@@ -37,26 +40,14 @@
             }
 
             input#chattext{
-                width:400px;
+				margin:0px 0px 0px 40px;
+                width:100%;
                 font-size:30px;
                 border:0px;
             }
-            
-            ul#stripes{
-                list-style:none;
-                width:100%;
-                position:fixed;
-                top:0px;
-                -webkit-margin-before:0px;
-                -webkit-margin-after:0px;
-                -webkit-padding-start: 0px;
-                background-color:white;
-            }
-            
-            ul#stripes li{
-                float:left;
-                width:25%;
-                height:8px;
+
+            .stripes{
+                height:14px;
             }
             
             .blue1{
@@ -86,34 +77,46 @@
                 border: 2px  solid rgba(0,0,0,0.5); 
                 border-radius: 4px; padding: 8px;
             }
-			a#logout{
-				float:right;
-				margin-top:20px;
-			}
+		a#logout{
+			float:right;
+			margin-top:20px;
+		}
             
         </style>
         <!--schemeid: 3s21Tw0w0w0w0-->
     </head>
     <body>
-        <ul id="stripes">
-            <li class="blue1">&nbsp;</li>
-            <li class="blue2">&nbsp;</li>
-            <li class="blue3">&nbsp;</li>
-            <li class="orange1">&nbsp;</li>
-        </ul>
-        <div class="stripe blue1">
-        </div>
+		<div class="pure-g">
+			<div class="pure-u-1-4 blue1"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 blue2"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 blue3"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 orange1"><div class="stripes"></div></div>
+		</div>
+        
         {{if .User.Admin}}
                 <!--Should be admin-panel-->
                 <strong>Hallo Admin</strong>
             {{end}}
-        <div id="chat">
-            <div id="chatentries"></div>
-            <input type="text" placeholder="Type..." id="chattext">
-        </div>
+
+		
+		<div class="pure-g-r">
+			<div id="chat">
+	            <div id="chatentries"></div>
+        	</div>
+		
+			<div class="pure-g typef">
+				<div class="pure-u-4-5">
+					<input type="text" placeholder="Type..." id="chattext">
+				</div>
+				<div class="pure-u-1-5">
+					<a class="pure-button pure-button-primary" id="sentButton">Send</a>	
+				</div>
+			</div>
+
+		</div>
         <a id="logout" href="/logout">logout</a>
         <script type="application/javascript">    
-            
+           
             var ws = "ws://{{.Host}}/ws";
             var connection = new WebSocket(ws)
             
@@ -142,7 +145,15 @@
             var submit = function(text){
                 connection.send(JSON.stringify({Username:"", Text:text}));
             }
-            
+	
+			
+			document.getElementById("sentButton").onclick = function(event){
+				chattext = document.getElementById("chattext")
+				submit(chattext.value)
+				chattext.value = ""
+				event.preventDefault();
+			}
+
             document.getElementById("chattext").onkeydown = function(event){
                 var code = event.keyCode;
                 if(code === 13){
