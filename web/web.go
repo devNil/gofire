@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	db "gofire/database"
     "fmt"
     "github.com/gorilla/sessions"
 )
@@ -30,25 +29,23 @@ func init() {
     log.Println("Static Dir: ", staticDir)
 }
 
-const GofireSession = "gSession"
+//const GofireSession = "gSession"
 
-func CheckSession(r *http.Request)string{
-	if cookie, err :=r.Cookie(GofireSession); err != nil{
-		return ""
+func CheckSession(r *http.Request)bool{
+
+	session, _ := store.Get(r, cookieName) 
+	if session.Values["id"] == nil{
+		return false
 	}else{
-		if db.IsSessionValid(cookie.Value){
-			return cookie.Value
-		}
-		return ""
+		return true
 	}
-	return ""
 }
 
 
 //Handler for the index-site
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//Session validation
-	if token := CheckSession(r); token != ""{
+	if valid := CheckSession(r); valid {
 		http.Redirect(w, r, "/chat", http.StatusFound)
 		return
 	}
