@@ -1,0 +1,29 @@
+{{define "settingsSub"}}
+    <div class="pure-u">
+        <div class="pure-menu pure-menu-open" id="nav">
+            <ul>
+                <li><a href="#">Flickr</a></li>
+                <li><a href="#">Flickr</a></li>
+                <li><a href="#">Flickr</a></li>
+                <li><a href="#">Flickr</a></li>
+                <li><a href="#">Flickr</a></li>
+            </ul>
+        </div>
+    </div>
+{{end}}
+
+{{define "settings"}}
+    <!DOCTYPE>
+    <html>
+        {{template "head" .}}
+        <body>
+            <div class="content pure-g-r">
+            {{template "navigation"}}
+                {{template "settingsSub"}}
+                <div class="pure-u-3-5">
+                    <p style="margin:20px;">Test</p>
+                </div>
+            </div>
+        </body>
+    </html>
+{{end}}

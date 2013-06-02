@@ -1,7 +1,6 @@
 package socket
 
 import(
-	"gofire/web"
 	db "gofire/database"
 	"code.google.com/p/go.net/websocket"
 	"log"
@@ -81,22 +80,9 @@ func (c *connection)reader(){
 	c.conn.Close()
 }
 
-
-func SocketHandler(conn *websocket.Conn){
-	token := web.CheckSession(conn.Request())
-
-	if token == ""{
-		return
-	}
-
-	username := db.GetUser(token)
-
-	if username == ""{
-		return
-	}
-
+func RegisterConnection(conn *websocket.Conn, user *db.User){
 	c := &connection{
-		username,
+		user.Login,
 		conn,
 		make(chan message),
 	}

@@ -2,8 +2,8 @@ package web
 
 import(
 	"net/http"
-	db "gofire/database"
-	"time"
+    "log"
+    "gofire/database"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request){
@@ -11,16 +11,28 @@ func LoginHandler(w http.ResponseWriter, r *http.Request){
 	username := r.FormValue("user")
 	password := r.FormValue("pw")
 
-	token := db.IsUserPasswordValid(username, password)
+    id, err := database.GetUserId(username, password)
 
-	if token == ""{
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
+    log.Println(id)
 
-	d := time.Now().Add(356*24*time.Hour)
-	cookie := &http.Cookie{Name:GofireSession, Value:token, Expires:d, HttpOnly:true}
-	http.SetCookie(w, cookie)
+    if err != nil{
+        log.Println(err)
+        http.Redirect(w, r, "/", http.StatusFound)
+        return
+    }
+
+    session , err := store.Get(r, cookieName)
+
+    if err != nil{
+        log.Println(err)
+        http.Redirect(w, r, "/", http.StatusFound)
+        return
+    }
+
+    session.Values["id"] = id
+
+    store.Save(r, w, session)
+
 	http.Redirect(w, r, "/chat", http.StatusFound)
 	return
 }
