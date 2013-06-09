@@ -57,7 +57,19 @@ input#chattext{
 }
 
 .red1{
-	background-color:red;
+	background-color:#FF0000;
+}
+
+.red2{
+	background-color:#E6001A;
+}
+
+.red3{
+	background-color:#CC0033;
+}
+
+.red4{
+    background-color:#B2004C;
 }
 
 #contact{

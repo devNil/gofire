@@ -71,21 +71,14 @@
 					return element
 			})
 
-			switch(state){
-				case 0: // established/normal
-					var arr = new Array("blue1","blue2","blue3","orange1");
-					console.log(div.childNodes)
-					for (i=0; i < div.length; i++){
-							div[i].className = "pure-u-1-4 " + arr[i];
-					}
-					break;
-				case 1: // disconnected/error
-					for (i=0; i < div.length; i++){
-						div[i].className = "pure-u-1-4 red1";
-					}
-					break;
-				default:
-					break;
+			var colors;
+			if(state == 0)
+				colors = ["blue1","blue2","blue3","orange1"] 
+			else if(state==1)
+				colors = ["red1","red2","red3","red4"];
+
+			for (i=0; i < div.length; i++){
+				div[i].className = "pure-u-1-4 " + colors[i];
 			}
 		}
 		
