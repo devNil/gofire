@@ -37,6 +37,7 @@
 		
 		var ws = "ws://{{.Host}}/ws";
 		var reconnect_timeout = 1000;
+		var connState = 0;
 
 		var isMobile = {
 			Android: function() { return navigator.userAgent.match(/Android/i); },
@@ -65,6 +66,11 @@
 		}
 
 		function changeState(state){
+			if(state == connState)
+				return
+
+			connState = state;
+
 			var div = toArray(document.getElementById("statusbar").childNodes);
 			div = div.filter(function(element){
 				if (element.className != "stripes" && element.className != undefined)
@@ -100,7 +106,6 @@
 
 			connection.onclose = function(event){
 				changeState(1);
-				console.log("close");
 				setTimeout(function(){start(wsServerLocation)}, reconnect_timeout);
 			}
 
