@@ -1,0 +1,90 @@
+html, body{
+	font-family:Tahoma, Arial;
+	font-size:30px;
+}
+
+::-webkit-scrollbar {
+	width: 0px;
+}
+
+
+div#chat{
+	letter-spacing: normal; /* override pure-css*/
+	margin:40px 0px 0px 40px;
+}
+
+div#chatentries{
+	height:75%;
+
+	overflow-y:scroll;
+}
+
+input#chattext{
+	width:400px;
+	font-size:30px;
+	border:0px;
+}
+
+input:focus{
+	outline:0px;
+}
+
+input#chattext{
+	margin:0px 0px 0px 40px;
+	width:100%;
+	font-size:30px;
+	border:0px;
+}
+
+.stripes{
+	height:14px;
+}
+
+.blue1{
+	background-color:#086FA1;
+}
+
+.blue2{
+	background-color:#3CA0D0;
+}
+
+.blue3{
+	background-color:#63ADD0;
+}
+
+.orange1{
+	background-color:#FF8900;
+}
+
+.red1{
+	background-color:#FF0000;
+}
+
+.red2{
+	background-color:#E6001A;
+}
+
+.red3{
+	background-color:#CC0033;
+}
+
+.red4{
+    background-color:#B2004C;
+}
+
+#contact{
+	position:  absolute;
+	width:300px;
+	height:500px;
+	left: 0;
+	top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
+	width: 200px; 
+	background: rgba(255,255,255,0.66); 
+	border: 2px  solid rgba(0,0,0,0.5); 
+	border-radius: 4px; padding: 8px;
+}
+a#logout{
+	float:right;
+	margin-top:20px;
+}
+

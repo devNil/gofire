@@ -3,150 +3,145 @@
 <html>
     <head>
         <title>Table</title>
-        <style type="text/css">
-            html, body{
-                font-family:Tahoma, Arial;
-                font-size:30px;
-                margin:0px;
-            }
-
-            ::-webkit-scrollbar {
-                width: 0px;
-            }
-  
-
-            div#chat{
-                margin:40px 0px 0px 40px;
-                height:640px;    
-            }
-
-            div#chatentries{
-                height:610px;
-                width:90%;
-                overflow-y:scroll;
-            }
-
-            input#chattext{
-                width:400px;
-                font-size:30px;
-                border:0px;
-            }
-
-            input:focus{
-                outline:0px;
-            }
-
-            input#chattext{
-                width:400px;
-                font-size:30px;
-                border:0px;
-            }
-            
-            ul#stripes{
-                list-style:none;
-                width:100%;
-                position:fixed;
-                top:0px;
-                -webkit-margin-before:0px;
-                -webkit-margin-after:0px;
-                -webkit-padding-start: 0px;
-                background-color:white;
-            }
-            
-            ul#stripes li{
-                float:left;
-                width:25%;
-                height:8px;
-            }
-            
-            .blue1{
-                background-color:#086FA1;
-            }
-            
-            .blue2{
-                background-color:#3CA0D0;
-            }
-            
-            .blue3{
-                background-color:#63ADD0;
-            }
-            
-            .orange1{
-                background-color:#FF8900;
-            }
-            
-            #contact{
-                position:  absolute;
-                width:300px;
-                height:500px;
-                left: 0;
-                top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
-                width: 200px; 
-                background: rgba(255,255,255,0.66); 
-                border: 2px  solid rgba(0,0,0,0.5); 
-                border-radius: 4px; padding: 8px;
-            }
-			a#logout{
-				float:right;
-				margin-top:20px;
-			}
-            
+		<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.1.0/pure-min.css">
+		<link rel="stylesheet" href="css/chat.css">
+		<style type="text/css">
+ 			/* ugly hack to get pure-grids work without 1px gap... */
+	    	* { margin: -1px; padding: -1px;}          
         </style>
         <!--schemeid: 3s21Tw0w0w0w0-->
     </head>
     <body>
-        <ul id="stripes">
-            <li class="blue1">&nbsp;</li>
-            <li class="blue2">&nbsp;</li>
-            <li class="blue3">&nbsp;</li>
-            <li class="orange1">&nbsp;</li>
-        </ul>
-        <div class="stripe blue1">
-        </div>
-        <div id="chat">
-            <div id="chatentries"></div>
-            <input type="text" placeholder="Type..." id="chattext">
-        </div>
-        <a id="logout" href="/logout">logout</a>
-        <script type="application/javascript">    
-            
-            var ws = "ws://{{.}}/ws";
-            var connection = new WebSocket(ws)
-            
-            connection.onerror = function(){
-                console.log("error");
-            }
-            
-            connection.onmessage = function(event){
-                var msg = JSON.parse(event.data);
-                createChatEntry(msg.Username+": "+msg.Text)
-            }
-            
-            connection.onclose = function(event){
-                console.log("close");
-            }
-            
-            document.getElementById("chattext").focus();
-            
-            var createChatEntry = function(text){
-                    var div = document.createElement("div");
-                    div.innerText = text;
-                    document.getElementById("chatentries").appendChild(div);
-                    document.getElementById("chatentries").scrollTop =  document.getElementById("chatentries").scrollHeight;
-            }
-            
-            var submit = function(text){
-                connection.send(JSON.stringify({Username:"", Text:text}));
-            }
-            
-            document.getElementById("chattext").onkeydown = function(event){
-                var code = event.keyCode;
-                if(code === 13){
-                    submit(this.value);
-                    this.value = "";
-                    event.preventDefault();
-                }
-            }
+		<div id="statusbar" class="pure-g">
+			<div class="pure-u-1-4 blue1"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 blue2"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 blue3"><div class="stripes"></div></div>
+			<div class="pure-u-1-4 orange1"><div class="stripes"></div></div>
+		</div>
+		<h5 style="margin: 0">Hi, {{.User.Login}}</h5>
+
+	<div id="chat">
+	    <div id="chatentries"></div>
+	</div>
+	<div class="pure-g-r">
+	
+		<div class="pure-u-4-5">
+			<input type="text" placeholder="Type..." id="chattext">
+		</div>
+		<div class="pure-u-1-5">
+			<a class="pure-button pure-button-primary" id="sentButton">Send</a>	
+		</div>
+	</div>
+	<a id="logout" href="/logout">logout</a>
+	<script type="application/javascript">    
+		
+		var ws = "ws://{{.Host}}/ws";
+		var reconnect_timeout = 1000;
+		var connState = 0;
+
+		var isMobile = {
+			Android: function() { return navigator.userAgent.match(/Android/i); },
+			BlackBerry: function() { return navigator.userAgent.match(/BlackBerry/i); },
+			iOS: function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+			Opera: function() { return navigator.userAgent.match(/Opera Mini/i); },
+			Windows: function() { return navigator.userAgent.match(/IEMobile/i); },
+			any: function() {
+				return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+			}
+		};
+
+		// TODO: improve this, may load whole mobile-optimized css file
+		if( isMobile.any()){
+			var sheet = document.createElement('style')
+			sheet.innerHTML = "body, html { font-size: 200%;} input#chattext{ font-size: 135%}";
+			document.body.appendChild(sheet);
+		}
+
+		function toArray(obj){
+			var arr = [];
+			for (var i = obj.length >>> 0; i--;){
+				arr[i] = obj[i];
+			}
+			return arr;
+		}
+
+		function changeState(state){
+			if(state == connState)
+				return
+
+			connState = state;
+
+			var div = toArray(document.getElementById("statusbar").childNodes);
+			div = div.filter(function(element){
+				if (element.className != "stripes" && element.className != undefined)
+					return element
+			})
+
+			var colors;
+			if(state == 0)
+				colors = ["blue1","blue2","blue3","orange1"] 
+			else if(state==1)
+				colors = ["red1","red2","red3","red4"];
+
+			for (i=0; i < div.length; i++){
+				div[i].className = "pure-u-1-4 " + colors[i];
+			}
+		}
+		
+		function start(wsServerLocation){
+			connection = new WebSocket(wsServerLocation);
+			connection.onopen = function(){
+				changeState(0);
+			}
+
+			connection.onerror = function(){
+				console.log("error");
+				changeState(1);
+			}			
+			
+			connection.onmessage = function(event){
+				var msg = JSON.parse(event.data);
+				createChatEntry(msg.Username+": "+msg.Text)
+			}
+
+			connection.onclose = function(event){
+				changeState(1);
+				setTimeout(function(){start(wsServerLocation)}, reconnect_timeout);
+			}
+
+		}
+
+		start(ws);
+
+		document.getElementById("chattext").focus();
+			
+			var createChatEntry = function(text){
+				var div = document.createElement("div");
+				div.innerText = text;
+				document.getElementById("chatentries").appendChild(div);
+				document.getElementById("chatentries").scrollTop =  document.getElementById("chatentries").scrollHeight;
+		}
+		
+		var submit = function(text){
+			connection.send(JSON.stringify({Username:"", Text:text}));
+		}
+
+		
+		document.getElementById("sentButton").onclick = function(event){
+			chattext = document.getElementById("chattext")
+			submit(chattext.value)
+			chattext.value = ""
+			event.preventDefault();
+		}
+
+		document.getElementById("chattext").onkeydown = function(event){
+			var code = event.keyCode;
+			if(code === 13){
+				submit(this.value);
+				this.value = "";
+				event.preventDefault();
+			}
+		}
         </script>
     </body>
 </html>
